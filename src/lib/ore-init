@@ -1,0 +1,5 @@
+#!/bin/bash
+
+readonly ORE_HOME=$HOME/.ore
+
+export ORE_HOME

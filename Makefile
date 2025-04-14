@@ -15,10 +15,10 @@ all-deb: clean set-version build-deb
 all-rpm: clean set-version build-rpm
 
 deb-install:
-	apt install ./siakhooi-ore_0.1.0_amd64.deb
+	apt install ./*.deb
 deb-uninstall:
 	apt remove siakhooi-ore
 rpm-install:
-	rpm -i ./siakhooi-ore-0.1.0-1.fc41.noarch.rpm
+	rpm -i ./*.rpm
 rpm-uninstall:
 	rpm -e siakhooi-ore
