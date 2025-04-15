@@ -2,8 +2,10 @@ help:
 clean:
 	rm -rf target *.deb *.sha256sum *.sha512sum *.rpm ~/rpmbuild
 build-deb: clean
+	./scripts/shellcheck.sh
 	./scripts/build-deb.sh
 build-rpm: clean
+	./scripts/shellcheck.sh
 	scripts/build-rpms.sh
 set-version:
 	scripts/set-version.sh

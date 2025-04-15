@@ -2,4 +2,4 @@
 
 set -e
 
-shellcheck src/bin/*
+find src/bin -type f -exec shellcheck {} \;
