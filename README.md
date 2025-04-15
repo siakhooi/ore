@@ -23,3 +23,6 @@ source /usr/lib/ore/ore-init
 ## Requirements
 - `yq`
 
+## Binaries
+- `ore-config`
+- `ore-config-{set,edit}`

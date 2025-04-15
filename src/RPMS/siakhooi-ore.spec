@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.2.0
+Version:        0.3.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -24,9 +24,14 @@ certificate generators for development purposes.
 %files
 %license LICENSE
 %{_bindir}/ore-config
+%{_bindir}/ore-config-edit
+%{_bindir}/ore-config-set
 %{_libdir}/ore/ore-init
 
 %changelog
+* Tue Apr 15 2025 Siak Hooi <siakhooi@gmail.com> - 0.3.0
+- add ore-config-{edit,set}
+
 * Mon Apr 14 2025 Siak Hooi <siakhooi@gmail.com> - 0.2.0
 - add ore-init
 
