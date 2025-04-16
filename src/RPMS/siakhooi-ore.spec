@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.3.0
+Version:        0.4.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -16,19 +16,26 @@ certificate generators for development purposes.
 %install
 %{__mkdir}   -v -p %{buildroot}%{_bindir}
 %{__mkdir}   -v -p %{buildroot}%{_libdir}/ore
+%{__mkdir}   -v -p %{buildroot}/usr/share/ore/samples
 %{__mkdir}   -v -p %{buildroot}/usr/share/licenses/siakhooi-ore
 %{__install} -v -m 0755 %{_topdir}/BUILD/usr/bin/* %{buildroot}%{_bindir}
 %{__install} -v -m 0755 %{_topdir}/BUILD/usr/lib/ore/* %{buildroot}%{_libdir}/ore
-%{__install} -v -m 644  %{_topdir}/BUILD/LICENSE %{buildroot}/usr/share/licenses/siakhooi-ore
+%{__install} -v -m 644  %{_topdir}/BUILD/usr/share/ore/samples/* %{buildroot}/usr/share/ore/samples
+%{__install} -v -m 644  %{_topdir}/BUILD/LICENSE                 %{buildroot}/usr/share/licenses/siakhooi-ore
 
 %files
 %license LICENSE
 %{_bindir}/ore-config
 %{_bindir}/ore-config-edit
 %{_bindir}/ore-config-set
+%{_bindir}/ore-config-artifacts-sample
 %{_libdir}/ore/ore-init
+/usr/share/ore/samples/ore-config-artifacts.yaml
 
 %changelog
+* Wed Apr 16 2025 Siak Hooi <siakhooi@gmail.com> - 0.4.0
+- add ore-config-artifacts-sample
+
 * Tue Apr 15 2025 Siak Hooi <siakhooi@gmail.com> - 0.3.0
 - add ore-config-{edit,set}
 

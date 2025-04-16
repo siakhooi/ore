@@ -5,7 +5,7 @@ rm -rf ~/rpmbuild
 rpmdev-setuptree
 
 readonly SOURCE=src
-readonly TARGET=~/rpmbuild/BUILD/
+readonly TARGET=~/rpmbuild/BUILD
 
 # Spec File
 cp $SOURCE/RPMS/siakhooi-ore.spec ~/rpmbuild/SPECS
@@ -21,8 +21,14 @@ mkdir -p "$build_lib_home"
 cp -vr $SOURCE/lib/* "$build_lib_home"
 chmod 755 "$build_lib_home"/*
 
+# Share File
+readonly build_share_home=$TARGET/usr/share/ore
+mkdir -p "$build_share_home"
+cp -vr $SOURCE/share/* "$build_share_home"
+chmod 644 "$build_share_home"/*
+
 # License
-cp -vf ./LICENSE "$TARGET"
+cp -vf ./LICENSE "$TARGET/"
 
 # build rpm file
 rpmlint ~/rpmbuild/SPECS/siakhooi-ore.spec

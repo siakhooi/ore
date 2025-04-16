@@ -1,0 +1,4 @@
+# create in $HOME/.ore/artifacts/**/*
+artifacts:
+  artifact1:
+  artifact2:

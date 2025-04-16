@@ -1,0 +1,10 @@
+#!/bin/bash
+
+readonly sample_path=/usr/share/ore/samples/ore-config-artifacts.yaml
+
+if [ ! -f "$sample_path" ]; then
+  echo.error "Sample file not found."
+  exit 1
+fi
+
+yq "$sample_path"
