@@ -26,3 +26,4 @@ source /usr/lib/ore/ore-init
 ## Binaries
 - `ore-config`
 - `ore-config-{set,edit}`
+- `ore-config-artifacts-sample`
