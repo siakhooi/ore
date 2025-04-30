@@ -1,0 +1,14 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://raw.githubusercontent.com/siakhooi/ore/refs/heads/main/src/share/schemas/ore-config-artifacts.yaml"
+title: "Ore Artifacts Config File"
+description: "Ore Artifacts Config File"
+type: object
+additionalProperties: false
+properties:
+  artifacts:
+    type: object
+    additionalProperties: false
+    patternProperties:
+      "[0-9a-zA-Z_-]+":
+        type: object
+        additionalProperties: true

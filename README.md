@@ -22,8 +22,9 @@ source /usr/lib/ore/ore-init
 ```
 ## Requirements
 - `yq`
+- `jv`
 
 ## Binaries
 - `ore-config`
 - `ore-config-{set,edit}`
-- `ore-config-artifacts-sample`
+- `ore-config-artifacts-{sample, validate}`

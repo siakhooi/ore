@@ -24,3 +24,8 @@ rpm-install:
 	rpm -i ./*.rpm
 rpm-uninstall:
 	rpm -e siakhooi-ore
+
+deb-depends:
+	scripts/find-deb-depends.sh
+yum-depends:
+	scripts/find-yum-depends.sh

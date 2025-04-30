@@ -1,0 +1,23 @@
+#!/bin/bash
+
+configFileHome=$HOME/.ore/artifacts
+
+if [ ! -d "$configFileHome" ]; then
+  echo.error "Directory $configFileHome does not exist!"
+  exit 1
+fi
+
+readonly schema=/usr/share/ore/schemas/ore-config-artifacts.yaml
+
+if [ ! -f "$schema" ]; then
+  echo.error "Schema file not found. Please reinstall."
+  exit 1
+fi
+
+(
+  find "$configFileHome" -type f | sort | while read -r configFileFullPath; do
+    jv "$schema" "$configFileFullPath" | sed -e 1d -e 's/^instance //g' -e 's/:/,/g'
+  done
+) |
+  column -t -s, -N'File,Status' |
+  highlight.red ' failed' | highlight.green ' ok'

@@ -1,4 +1,6 @@
 # create in $HOME/.ore/artifacts/**/*
 artifacts:
   artifact1:
+    x: 1
   artifact2:
+    y: 1
