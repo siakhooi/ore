@@ -23,3 +23,4 @@ sudo yum install siakhooi-ore
 - `ore-config`
 - `ore-config-{set,edit}`
 - `ore-config-artifacts-{sample, validate}`
+- `ore-version`

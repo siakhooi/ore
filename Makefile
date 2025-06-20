@@ -19,7 +19,7 @@ all-rpm: clean set-version build-rpm
 deb-install:
 	apt install ./*.deb
 deb-uninstall:
-	apt remove siakhooi-ore
+	apt remove -y siakhooi-ore
 rpm-install:
 	rpm -i ./*.rpm
 rpm-uninstall:

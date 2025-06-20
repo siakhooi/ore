@@ -12,7 +12,7 @@ cp $SOURCE/RPMS/siakhooi-ore.spec ~/rpmbuild/SPECS
 
 # Binary File
 mkdir -p $TARGET/usr/bin
-cp -vr $SOURCE/bin/config/* $TARGET/usr/bin
+find $SOURCE/bin -type f -exec cp -vr {} "$TARGET/usr/bin" \;
 chmod 755 $TARGET/usr/bin/*
 
 # Lib File

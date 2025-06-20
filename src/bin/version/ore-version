@@ -1,0 +1,12 @@
+#!/bin/bash
+
+readonly COMPONENT_NAME=siakhooi-ore
+
+if command -v apt >/dev/null 2>&1; then
+  apt show "$COMPONENT_NAME" 2>/dev/null | grep 'Version:' | sed 's/Version: //'
+elif command -v rpm >/dev/null 2>&1; then
+  rpm -q --qf '%{VERSION}\n' "$COMPONENT_NAME" 2>/dev/null
+else
+  echo "Neither apt nor rpm found." >&2
+  exit 1
+fi

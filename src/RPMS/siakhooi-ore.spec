@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.6.0
+Version:        0.7.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -40,11 +40,15 @@ fi
 %{_bindir}/ore-config-set
 %{_bindir}/ore-config-artifacts-sample
 %{_bindir}/ore-config-artifacts-validate
+%{_bindir}/ore-version
 %{_libdir}/ore/ore-init
 /usr/share/ore/samples/ore-config-artifacts.yaml
 /usr/share/ore/schemas/ore-config-artifacts.yaml
 
 %changelog
+* Fri Jun 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.7.0
+- add ore-version
+
 * Fri Jun 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.6.0
 - add init to /etc/profile.d
 
