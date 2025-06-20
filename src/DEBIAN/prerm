@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+[ -L /etc/profile.d/ore-init.sh ] && rm -f /etc/profile.d/ore-init.sh

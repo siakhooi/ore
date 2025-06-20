@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.5.0
+Version:        0.6.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -25,6 +25,14 @@ certificate generators for development purposes.
 %{__install} -v -m 644  %{_topdir}/BUILD/usr/share/ore/schemas/* %{buildroot}/usr/share/ore/schemas
 %{__install} -v -m 644  %{_topdir}/BUILD/LICENSE                 %{buildroot}/usr/share/licenses/siakhooi-ore
 
+%post
+ln -sf /usr/lib/ore/ore-init /etc/profile.d/ore-init.sh
+
+%preun
+if [ "$1" -eq 0 ]; then
+    [ -L /etc/profile.d/ore-init.sh ] && rm -f /etc/profile.d/ore-init.sh
+fi
+
 %files
 %license LICENSE
 %{_bindir}/ore-config
@@ -37,6 +45,9 @@ certificate generators for development purposes.
 /usr/share/ore/schemas/ore-config-artifacts.yaml
 
 %changelog
+* Fri Jun 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.6.0
+- add init to /etc/profile.d
+
 * Tue Apr 29 2025 Siak Hooi <siakhooi@gmail.com> - 0.5.0
 - add ore-config-artifacts-validate
 

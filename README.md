@@ -15,11 +15,6 @@ sudo curl -L https://siakhooi.github.io/rpms/siakhooi-rpms.repo | sudo tee /etc/
 sudo yum install siakhooi-ore
 ```
 
-## post installation config
-add the following lines to ~/.bashrc
-```
-source /usr/lib/ore/ore-init
-```
 ## Requirements
 - `yq`
 - `jv`

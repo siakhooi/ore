@@ -29,3 +29,6 @@ deb-depends:
 	scripts/find-deb-depends.sh
 yum-depends:
 	scripts/find-yum-depends.sh
+
+check-init:
+	ls -l /etc/profile.d/ore-init.sh /usr/lib/ore/ore-init

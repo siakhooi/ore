@@ -8,6 +8,8 @@ mkdir "$TARGET"
 
 # Control File
 cp -vr $SOURCE/DEBIAN $TARGET
+chmod 755 $TARGET/DEBIAN/postinst
+chmod 755 $TARGET/DEBIAN/prerm
 
 # Binary File
 mkdir -p $TARGET/usr/bin
