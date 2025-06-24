@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly sample_path=/usr/share/ore/samples/ore-config-artifacts.yaml
+readonly sample_path=/usr/share/ore/samples/ore-artifacts-config.yaml
 
 if [ ! -f "$sample_path" ]; then
   echo.error "Sample file not found."

@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.9.0
+Version:        0.10.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -38,16 +38,19 @@ fi
 %{_bindir}/ore-config
 %{_bindir}/ore-config-edit
 %{_bindir}/ore-config-set
-%{_bindir}/ore-config-artifacts-sample
-%{_bindir}/ore-config-artifacts-validate
 %{_bindir}/ore-version
 %{_bindir}/ore-artifacts-list
 %{_bindir}/ore-artifacts-config
+%{_bindir}/ore-artifacts-config-sample
+%{_bindir}/ore-artifacts-config-validate
 %{_libdir}/ore/ore-init
-/usr/share/ore/samples/ore-config-artifacts.yaml
-/usr/share/ore/schemas/ore-config-artifacts.yaml
+/usr/share/ore/samples/ore-artifacts-config.yaml
+/usr/share/ore/schemas/ore-artifacts-config.yaml
 
 %changelog
+* Tue Jun 24 2025 Siak Hooi <siakhooi@gmail.com> - 0.10.0
+- rename ore-config-artifacts
+
 * Sun Jun 22 2025 Siak Hooi <siakhooi@gmail.com> - 0.9.0
 - add ore-artifacts-config
 

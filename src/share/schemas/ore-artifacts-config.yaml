@@ -1,5 +1,5 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
-$id: "https://raw.githubusercontent.com/siakhooi/ore/refs/heads/main/src/share/schemas/ore-config-artifacts.yaml"
+$id: "https://raw.githubusercontent.com/siakhooi/ore/refs/heads/main/src/share/schemas/ore-artifacts-config.yaml"
 title: "Ore Artifacts Config File"
 description: "Ore Artifacts Config File"
 type: object
