@@ -1,0 +1,68 @@
+#!/bin/bash
+
+usage() {
+  echo "Usage: $(basename "$0") [-h] [-l] [-a] [artifact_name]"
+  echo "Get the path to the artifact."
+  echo "  -h:  Show this help message"
+  echo "without artifact_name:"
+  echo "  prints the root path of artifacts"
+  echo "with artifact_name given:"
+  echo "       prints the root path of the artifact"
+  echo "  -a:  List path to all versions of artifact"
+  echo "  -l:  List path to latest version of artifact"
+}
+
+list_all=false
+list_latest=false
+while getopts "hal" arg; do
+  case $arg in
+  h)
+    usage
+    exit 0
+    ;;
+  a)
+    list_all=true
+    ;;
+  l)
+    list_latest=true
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+if [[ $# -ne 0 ]] && [[ $# -ne 1 ]]; then
+  usage
+  exit 0
+fi
+
+if [[ $# -eq 0 ]]; then
+  if [[ $list_all == true || $list_latest == true ]]; then
+    echo "Error: Cannot use -a or -l options without specifying artifact_name."
+    exit 1
+  fi
+elif [[ $# -eq 1 ]]; then
+  if [[ $list_all == true && $list_latest == true ]]; then
+    echo "Error: Cannot use both -a and -l options together."
+    exit 1
+  fi
+fi
+
+readonly artifact_name=$1
+root=$(ore-config '.artifacts.home')
+
+if [[ $# -eq 0 ]]; then
+  echo "$root"
+elif [[ $# -eq 1 ]]; then
+
+  if [[ $list_all == true ]]; then
+    find "$root/$artifact_name" -type f | sort -V
+  elif [[ $list_latest == true ]]; then
+    find "$root/$artifact_name" -type f | sort -V | tail -n 1
+  else
+    echo "$root/$artifact_name"
+  fi
+fi
