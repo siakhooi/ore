@@ -1,11 +1,14 @@
 #!/bin/bash
 
+readonly configHome=$HOME/.ore
+readonly configFileHome=$configHome/artifacts
+
 download=false
 distribute=false
 housekeep=false
 
 usage() {
-  echo "Usage: $(basename "$0") [-h] [-d] [-i] [-c] [-a] [artifact]"
+  echo "Usage: $(basename "$0") [-h] [-d] [-i] [-c] [-a] [artifact [yaml_path]] "
   echo "List all artifacts in the ore configuration."
   echo "  -h  Show this help message"
   echo "  -d  List artifacts with Download"
@@ -40,19 +43,18 @@ while getopts "hdica" arg; do
   esac
 done
 shift $((OPTIND - 1))
-if [[ $# -ne 0 ]] && [[ $# -ne 1 ]]; then
+if [[ $# -ne 0 ]] && [[ $# -ne 1 ]] && [[ $# -ne 2 ]]; then
   usage
   exit 0
 fi
 readonly artifact=$1
+readonly yaml_path=$2
 
 if ! $download && ! $distribute && ! $housekeep; then
   download=true
   distribute=true
   housekeep=true
 fi
-
-readonly configFileHome=$HOME/.ore/artifacts
 
 options=()
 $download && options+=('"download"')
@@ -67,19 +69,28 @@ for opt in "${options[@]:1}"; do
 done
 
 artifact_filter=
+yaml_filter=
 if [[ -n "$artifact" ]]; then
   artifact_filter='| {"artifacts": .artifacts| with_entries(select(.key == "%s"))}'
   artifact_filter=${artifact_filter//"%s"/"$artifact"}
+
+  if [[ -n "$yaml_path" ]]; then
+    yaml_filter='| .%s%y // ""'
+    yaml_filter=${yaml_filter//"%s"/"$artifact"}
+    yaml_filter=${yaml_filter//"%y"/"$yaml_path"}
+
+  fi
 fi
 # shellcheck disable=SC2016
 query='(.default // {} ) as $default %a
        |.artifacts[]
        |{ key: $default *+ . }
        |select (.[]|(%b))
-       |with_entries(.value |= with_entries(select(%c)))'
+       |with_entries(.value |= with_entries(select(%c))) %d'
 query=${query//"%a"/"$artifact_filter"}
 query=${query//"%b"/"$option_str"}
 query=${query//"%c"/"$filter_str"}
+query=${query//"%d"/"$yaml_filter"}
 
 (
   find "$configFileHome" -type f |
