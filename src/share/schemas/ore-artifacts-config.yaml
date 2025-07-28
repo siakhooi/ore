@@ -5,6 +5,9 @@ description: "Ore Artifacts Config File"
 type: object
 additionalProperties: false
 properties:
+  default:
+    type: object
+    additionalProperties: true
   artifacts:
     type: object
     additionalProperties: false
