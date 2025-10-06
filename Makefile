@@ -9,9 +9,9 @@ build-rpm: clean
 	scripts/build-rpms.sh
 set-version:
 	scripts/set-version.sh
-git-commit-and-push:
+commit:
 	scripts/git-commit-and-push.sh
-create-release:
+release:
 	scripts/create-release.sh
 all-deb: clean set-version build-deb
 all-rpm: clean set-version build-rpm

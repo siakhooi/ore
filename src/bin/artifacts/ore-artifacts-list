@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091
+source /usr/lib/ore/ore-init
+
+readonly configFileHome=$ORE_HOME/artifacts
+
 download=false
 distribute=false
 housekeep=false
@@ -50,8 +55,6 @@ if ! $download && ! $distribute && ! $housekeep; then
   distribute=true
   housekeep=true
 fi
-
-readonly configFileHome=$HOME/.ore/artifacts
 
 options=()
 $download && options+=('has("download")')

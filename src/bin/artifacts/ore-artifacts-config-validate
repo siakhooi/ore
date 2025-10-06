@@ -1,13 +1,15 @@
 #!/bin/bash
 
-configFileHome=$HOME/.ore/artifacts
+# shellcheck disable=SC1091
+source /usr/lib/ore/ore-init
+
+readonly configFileHome=$ORE_HOME/artifacts
+readonly schema=/usr/share/ore/schemas/ore-artifacts-config.yaml
 
 if [ ! -d "$configFileHome" ]; then
   echo.error "Directory $configFileHome does not exist!"
   exit 1
 fi
-
-readonly schema=/usr/share/ore/schemas/ore-artifacts-config.yaml
 
 if [ ! -f "$schema" ]; then
   echo.error "Schema file not found. Please reinstall."

@@ -1,7 +1,9 @@
 #!/bin/bash
 
-readonly configHome=$HOME/.ore
-readonly configFileHome=$configHome/artifacts
+# shellcheck disable=SC1091
+source /usr/lib/ore/ore-init
+
+readonly configFileHome=$ORE_HOME/artifacts
 
 download=false
 distribute=false

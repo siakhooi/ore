@@ -1,6 +1,9 @@
 #!/bin/bash
 
-readonly config_file="$HOME/.ore/config.yaml"
+# shellcheck disable=SC1091
+source /usr/lib/ore/ore-init
+
+readonly config_file="$ORE_HOME/config.yaml"
 
 if [[ ! -f $config_file ]]; then
   mkdir -p "$(dirname "$config_file")"

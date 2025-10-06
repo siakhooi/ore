@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091
+source /usr/lib/ore/ore-init
+
+readonly config_file="$ORE_HOME/config.yaml"
+
 if [[ $# -ne 0 ]] && [[ $# -ne 1 ]]; then
   echo "Usage: $(basename "$0") [yaml_path]"
   exit 0
 fi
 
-readonly config_file="$HOME/.ore/config.yaml"
 readonly yaml_path=$1
 
 if [[ -f "$config_file" ]]; then
