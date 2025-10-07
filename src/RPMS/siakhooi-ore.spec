@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.13.1
+Version:        0.14.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -44,11 +44,15 @@ fi
 %{_bindir}/ore-artifacts-config
 %{_bindir}/ore-artifacts-config-sample
 %{_bindir}/ore-artifacts-config-validate
+%{_bindir}/ore-github-release-latest-get
 %{_libdir}/ore/ore-init
 /usr/share/ore/samples/ore-artifacts-config.yaml
 /usr/share/ore/schemas/ore-artifacts-config.yaml
 
 %changelog
+* Tue Oct 07 2025 Siak Hooi <siakhooi@gmail.com> - 0.14.0
+- add ore-github-release-latest-get
+
 * Mon Oct 06 2025 Siak Hooi <siakhooi@gmail.com> - 0.13.1
 - refactor bins to source ore-init
 

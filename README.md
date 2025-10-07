@@ -27,3 +27,4 @@ sudo yum install siakhooi-ore
 - `ore-artifacts-config-{sample, validate}`
 - `ore-artifacts-list`
 - `ore-version`
+- `ore-github-release-latest-get`
