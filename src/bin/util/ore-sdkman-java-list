@@ -1,0 +1,32 @@
+#!/bin/bash
+
+usage() {
+  echo "Usage: $(basename "$0") [-h]"
+}
+while getopts "h" arg; do
+  case $arg in
+  h)
+    usage
+    exit 0
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+  esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 0 ]]; then
+  usage
+  exit 0
+fi
+
+readonly SDKMAN_CANDIDATES_API="https://api.sdkman.io/2"
+readonly SDKMAN_PLATFORM=linuxx64
+readonly candidate=java
+
+set -e
+current_version=$(java --version | awk 'NR==1 {print $2}')-ms
+
+set -x
+curl --no-progress-meter "${SDKMAN_CANDIDATES_API}/candidates/${candidate}/${SDKMAN_PLATFORM}/versions/list?installed=${current_version}"

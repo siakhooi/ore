@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.14.0
+Version:        0.15.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -35,21 +35,25 @@ fi
 
 %files
 %license LICENSE
-%{_bindir}/ore-config
-%{_bindir}/ore-config-edit
-%{_bindir}/ore-config-set
-%{_bindir}/ore-version
 %{_bindir}/ore-artifact
-%{_bindir}/ore-artifacts-list
 %{_bindir}/ore-artifacts-config
 %{_bindir}/ore-artifacts-config-sample
 %{_bindir}/ore-artifacts-config-validate
+%{_bindir}/ore-artifacts-list
+%{_bindir}/ore-config
+%{_bindir}/ore-config-edit
+%{_bindir}/ore-config-set
 %{_bindir}/ore-github-release-latest-get
+%{_bindir}/ore-sdkman-java-list
+%{_bindir}/ore-version
 %{_libdir}/ore/ore-init
 /usr/share/ore/samples/ore-artifacts-config.yaml
 /usr/share/ore/schemas/ore-artifacts-config.yaml
 
 %changelog
+* Mon Dec 15 2025 Siak Hooi <siakhooi@gmail.com> - 0.15.0
+- add ore-sdkman-java-list
+
 * Tue Oct 07 2025 Siak Hooi <siakhooi@gmail.com> - 0.14.0
 - add ore-github-release-latest-get
 

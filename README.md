@@ -18,6 +18,7 @@ sudo yum install siakhooi-ore
 ## Requirements
 - `yq`
 - `jv`
+- `jq`
 
 ## Binaries
 - `ore-config`
@@ -28,3 +29,4 @@ sudo yum install siakhooi-ore
 - `ore-artifacts-list`
 - `ore-version`
 - `ore-github-release-latest-get`
+- `ore-sdkman-java-list`
