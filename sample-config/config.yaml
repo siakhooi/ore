@@ -1,2 +1,21 @@
 artifacts:
   home: /path/to/keep/ore/downloaded/artifacts
+download:
+  default:
+    url:
+    - name: python-windows
+      urls:
+        - url: https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe
+        - url: https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe
+    - name: dbschema
+      alwaysDownload: Y
+      urls:
+        - url: https://dbschema.com/jdbc-drivers/CassandraJdbcDriver.zip
+        - url: https://dbschema.com/jdbc-drivers/MariaDbJdbcDriver.zip
+        - url: https://dbschema.com/jdbc-drivers/MongoDbJdbcDriver.zip
+        - url: https://dbschema.com/jdbc-drivers/SqliteJdbcDriver.zip
+        - url: https://dbschema.com/jdbc-drivers/H2JdbcDriver.zip
+    - name: ack
+      urls:
+        - url: https://beyondgrep.com/ack-v3.7.0
+          name: ack-3.7.0

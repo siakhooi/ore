@@ -1,5 +1,6 @@
 #!/bin/bash
 
 readonly ORE_HOME=$HOME/.ore
+readonly ORE_LIB_HOME=/usr/lib/ore
 
-export ORE_HOME
+export ORE_HOME ORE_LIB_HOME

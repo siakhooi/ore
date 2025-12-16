@@ -51,8 +51,8 @@ fi
 /usr/share/ore/schemas/ore-artifacts-config.yaml
 
 %changelog
-* Mon Dec 15 2025 Siak Hooi <siakhooi@gmail.com> - 0.15.0
-- add ore-sdkman-java-list
+* Tue Dec 16 2025 Siak Hooi <siakhooi@gmail.com> - 0.15.0
+- add ore-sdkman-java-list, ore-download
 
 * Tue Oct 07 2025 Siak Hooi <siakhooi@gmail.com> - 0.14.0
 - add ore-github-release-latest-get

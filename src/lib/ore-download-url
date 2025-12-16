@@ -1,0 +1,48 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name options"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+readonly options=$2
+
+zip_home=$(ore-artifact "$artifact")
+mkdir -p "$zip_home"
+
+alwaysDownload=$(echo "$options" | yq -r '.alwaysDownload // ""')
+is-true "$alwaysDownload" && echo.debug "alwaysDownload is on"
+
+echo "$options" | yq -r '.urls[]|[.url, .name]|join(",")' |
+	while IFS=, read -r url name; do
+
+		filename=${name:-$(basename "$url")}
+		target_path=$(ore-artifact "$artifact")"/$filename"
+
+		if ! is-true "$alwaysDownload" && [[ -f $target_path ]]; then
+			echo.debug "$target_path already exists." >&2
+		else
+			(
+				set -x
+				curl -L --fail "$url" -o "$target_path"
+			)
+
+		fi
+	done
