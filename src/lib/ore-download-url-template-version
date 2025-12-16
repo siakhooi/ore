@@ -1,0 +1,62 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name options"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+readonly options=$2
+
+zip_home=$(ore-artifact "$artifact")
+mkdir -p "$zip_home"
+
+alwaysDownload=$(echo "$options" | yq -r '.alwaysDownload // ""')
+is-true "$alwaysDownload" && echo.debug "alwaysDownload is on"
+
+# shellcheck disable=SC2016
+echo "$options" | yq -r '.urls[] | [.baseurl, .template // "", .target_format] | join(",")' | nl -v 0 -w 1 -s ',' |
+	while IFS=, read -r index baseurl template target_format; do
+
+		# shellcheck disable=SC2016
+		template=${template:-'${version}'}
+
+		echo "$options" | yq -r ".urls[$index]|.versions[]" |
+			while read -r version; do
+
+				url=${baseurl//$template/$version}
+				if [[ -z "$target_format" ]]; then
+					filename=$(basename "$url")
+				else
+					filename=${target_format//\$\{version\}/$version}
+				fi
+
+				target_path=$(ore-artifact "$artifact")"/$filename"
+
+				if ! is-true "$alwaysDownload" && [[ -f $target_path ]]; then
+					echo.debug "$target_path already exists." >&2
+				else
+					(
+						set -x
+						curl -L --fail "$url" -o "$target_path"
+					)
+
+				fi
+			done
+	done

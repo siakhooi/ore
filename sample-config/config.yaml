@@ -1,5 +1,6 @@
 artifacts:
   home: /path/to/keep/ore/downloaded/artifacts
+
 download:
   default:
     url:
@@ -19,3 +20,15 @@ download:
       urls:
         - url: https://beyondgrep.com/ack-v3.7.0
           name: ack-3.7.0
+
+    url-template-version:
+      - name: kafka
+        urls:
+          - baseurl: https://archive.apache.org/dist/kafka/${version}/kafka_2.12-${version}.tgz
+            versions:
+              - 3.9.1
+          - baseurl: https://archive.apache.org/dist/kafka/${v}/kafka_2.13-${v}.tgz
+            template: ${v}
+            versions:
+              - 4.1.1
+              - 3.9.1
