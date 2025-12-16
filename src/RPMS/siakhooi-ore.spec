@@ -46,6 +46,7 @@ fi
 %{_bindir}/ore-github-release-latest-get
 %{_bindir}/ore-sdkman-java-list
 %{_bindir}/ore-version
+%{_libdir}/ore/ore-download-url
 %{_libdir}/ore/ore-init
 /usr/share/ore/samples/ore-artifacts-config.yaml
 /usr/share/ore/schemas/ore-artifacts-config.yaml
