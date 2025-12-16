@@ -43,6 +43,7 @@ fi
 %{_bindir}/ore-config
 %{_bindir}/ore-config-edit
 %{_bindir}/ore-config-set
+%{_bindir}/ore-download
 %{_bindir}/ore-github-release-latest-get
 %{_bindir}/ore-sdkman-java-list
 %{_bindir}/ore-version
