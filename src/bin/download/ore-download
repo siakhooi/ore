@@ -4,14 +4,19 @@
 source /usr/lib/ore/ore-init
 
 usage() {
-	echo "Usage: $(basename "$0") [-h] artifact..."
+	echo "Usage: $(basename "$0") [-h] [-g group] artifact..."
+  echo "-g group   Specify a group of artifacts to download (can be used multiple times)"
+  echo "-h         Show this help message"
 }
-
-while getopts "h" arg; do
+groups=()
+while getopts "hg:" arg; do
 	case $arg in
 	h)
 		usage
 		exit 0
+		;;
+	g)
+		groups+=("$OPTARG")
 		;;
 	*)
 		usage
@@ -25,9 +30,17 @@ if [[ $# -eq 0 ]]; then
 	usage >&2
 	exit 0
 fi
-artifacts="$*"
+artifacts=()
+artifacts+=("$@")
 
-for artifact in $artifacts; do
+for group in "${groups[@]}"; do
+  while IFS= read -r artifact; do
+    artifacts+=("$artifact")
+  done < <(ore-config '.download.'"$group"'[][].name')
+done
+echo.debug "downloading:" "${artifacts[@]}"
+
+for artifact in "${artifacts[@]}"; do
 
 	download_type=$(ore-config '.download | to_entries | .[] | .value | to_entries | .[] | select(.value[] | select(.name == "'"$artifact"'")) | .key')
 	options=$(ore-config '.download | to_entries | .[] | .value | to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
