@@ -47,6 +47,7 @@ fi
 %{_bindir}/ore-github-release-latest-get
 %{_bindir}/ore-sdkman-java-list
 %{_bindir}/ore-version
+%{_libdir}/ore/ore-download-custom
 %{_libdir}/ore/ore-download-github
 %{_libdir}/ore/ore-download-jfrog
 %{_libdir}/ore/ore-download-sdkman
@@ -58,7 +59,7 @@ fi
 
 %changelog
 * Thu Dec 18 2025 Siak Hooi <siakhooi@gmail.com> - 0.17.0
-- add ore-download(sdkman, github, jfrog)
+- add ore-download(sdkman, github, jfrog, custom)
 
 * Tue Dec 16 2025 Siak Hooi <siakhooi@gmail.com> - 0.16.0
 - add ore-download(url-template-version)

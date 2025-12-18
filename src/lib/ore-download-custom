@@ -1,0 +1,50 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name options"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+readonly options=$2
+
+target_path=$(ore-artifact "$artifact")
+mkdir -p "$target_path"
+
+downloader=$(echo "$options" | yq -r '.script // ""')
+downloader=${downloader:-$artifact}
+downloader_path="$ORE_HOME/custom-downloader/$downloader"
+
+echo.debug "downloader: $downloader"
+echo.debug "downloader_path: $downloader_path"
+
+if [[ -z "$downloader" ]]; then
+	echo.error "No downloader specified for $artifact."
+	exit 1
+fi
+if [[ ! -f "$downloader_path" ]]; then
+	echo.error "Downloader for $artifact not found. ($downloader_path)"
+	exit 2
+fi
+if [[ ! -x "$downloader_path" ]]; then
+	echo.error "Downloader for $artifact is not executable. ($downloader_path)"
+	exit 3
+fi
+
+$downloader_path "$artifact" "$target_path"
