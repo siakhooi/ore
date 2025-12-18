@@ -1,5 +1,9 @@
 artifacts:
   home: /path/to/keep/ore/downloaded/artifacts
+jfrog:
+  default:
+    url: https://jfrog1.example.com/api/storage
+    user: jfroguser1:jfrogpassword1
 
 download:
   default:
@@ -47,3 +51,15 @@ download:
         repo: mikefarah/yq
         assetMatcherQuery: ^yq_linux_amd64$
         filenameStrategy: artifact-version
+
+    jfrog:
+      - name: artifact1
+        path: releases/com/example/artifact1
+      - name: artifact2
+        jfrogArtifactName: ArtifactB
+        path: releases/com/example/ArtifactB
+        extension: .jar
+      - name: artifact3
+        path: releases/com/example/artifact3
+        fileRegex: ^\\/artifact3-.*-jar-with-dependencies.jar$
+        extension: .jar

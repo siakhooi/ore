@@ -1,0 +1,92 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name options"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+readonly options=$2
+
+jfrog_get() {
+	local path=$1
+	local opts=(--silent)
+	[[ -n $jfrg_server_user ]] && opts+=(-u "$jfrg_server_user")
+
+	curl "${opts[@]}" "$jfrog_server_url/${path}"
+}
+
+jfrog_path=$(echo "$options" | yq -r '.path')
+jfrog_artifact_name=$(echo "$options" | yq -r '.jfrogArtifactName')
+jfrog_artifact_name=${jfrog_artifact_name:-$artifact}
+artifact_extension=$(echo "$options" | yq -r '.extension // ".zip"')
+jfrog_version=$(echo "$options" | yq -r '.version // ""')
+jfrog_server=$(echo "$options" | yq -r '.server // "default"')
+jfrog_server_url=$(ore-config ".jfrog.${jfrog_server}.url")
+jfrg_server_user=$(ore-config ".jfrog.${jfrog_server}.user")
+artifact_regex=$(echo "$options" | yq -r '.fileRegex // ""')
+artifact_regex=${artifact_regex:-"\\\\/.*$jfrog_artifact_name.*\\\\$artifact_extension"}
+
+echo.debug "jfrog_path: $jfrog_path"
+echo.debug "jfrog_artifact_name: $jfrog_artifact_name"
+echo.debug "artifact_extension: $artifact_extension"
+echo.debug "jfrog_version: $jfrog_version"
+echo.debug "artifact_regex: $artifact_regex"
+echo.debug "jfrog_server_url: $jfrog_server_url"
+echo.debug "jfrg_server_user: $jfrg_server_user"
+
+if [[ -z $jfrog_version ]]; then
+
+	jfrog_versions=$(jfrog-get "$jfrog_path")
+
+	latest_version=$(echo "$jfrog_versions" | jq -r '.children[] | select(.folder==true) | .uri' | sed 's|/||' | sort -V | tail -n 1)
+else
+	latest_version=$jfrog_version
+fi
+echo.debug "latest_version: $latest_version"
+
+latest_version_artifacts=$(jfrog-get "$jfrog_path/$latest_version")
+latest_version_artifact=$(echo "$latest_version_artifacts" | jq '.children[] | select(.folder==false) | select(.uri | test("'"$artifact_regex"'")) | .uri' | sed 's/"//g' | sed 's/\///' | sort -V | tail -n 1)
+
+echo.debug "latest_version_artifact: $latest_version_artifact"
+
+download_url=$(jfrog-get "$jfrog_path/$latest_version/$latest_version_artifact" | jq -r '.downloadUri // ""')
+if [[ -z $download_url ]]; then
+	echo.error "Failed to get download URL for $artifact"
+	exit 1
+fi
+
+echo.debug "Latest: $download_url"
+local_name=$(basename "$download_url")
+local_home=$(ore-artifact "$artifact")
+mkdir -p "$local_home"
+
+cd "$local_home" || {
+	echo.error "Failed to enter to $local_home"
+	exit 1
+}
+
+if [[ -f $local_name ]]; then
+	echo.debug "$local_name already exists."
+else
+	(
+		set -x
+		curl -L --fail "$download_url" -o "$local_name"
+	)
+fi
