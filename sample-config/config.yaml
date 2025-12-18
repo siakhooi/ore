@@ -32,3 +32,12 @@ download:
             versions:
               - 4.1.1
               - 3.9.1
+
+    sdkman:
+      - name: gradle
+      - name: maven
+      - name: java
+        extension: .tar.gz
+        versions:
+          - 21.0.9-ms
+          - 17.0.17-ms

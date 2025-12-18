@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.16.0
+Version:        0.17.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -47,6 +47,7 @@ fi
 %{_bindir}/ore-github-release-latest-get
 %{_bindir}/ore-sdkman-java-list
 %{_bindir}/ore-version
+%{_libdir}/ore/ore-download-sdkman
 %{_libdir}/ore/ore-download-url
 %{_libdir}/ore/ore-download-url-template-version
 %{_libdir}/ore/ore-init
@@ -54,6 +55,9 @@ fi
 /usr/share/ore/schemas/ore-artifacts-config.yaml
 
 %changelog
+* Thu Dec 18 2025 Siak Hooi <siakhooi@gmail.com> - 0.17.0
+- add ore-download(sdkman)
+
 * Tue Dec 16 2025 Siak Hooi <siakhooi@gmail.com> - 0.16.0
 - add ore-download(url-template-version)
 

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+readonly SDKMAN_CANDIDATES_API="https://api.sdkman.io/2"
+readonly SDKMAN_PLATFORM=linuxx64
+readonly DEFAULT_EXTENSION=".zip"
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name options"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+readonly options=$2
+readonly SDKMAN_CANDIDATE=$artifact
+SDKMAN_VERSION=$3
+
+zip_home=$(ore-artifact "$artifact")
+mkdir -p "$zip_home"
+
+extension=$(echo "$options" | yq -r '.extension // "'$DEFAULT_EXTENSION'"')
+has_versions=$(echo "$options" | yq '.versions != null')
+versions=()
+
+if is-true "$has_versions"; then
+	mapfile -t versions < <(echo "$options" | yq -r '.versions[]')
+else
+	URL_DEFAULT_VERSION="${SDKMAN_CANDIDATES_API}/candidates/default/${SDKMAN_CANDIDATE}"
+	SDKMAN_VERSION=$(curl --no-progress-meter "$URL_DEFAULT_VERSION")
+
+	if [[ -z $SDKMAN_VERSION ]]; then
+		echo.error "Error: Unable to get default version for $artifact."
+		exit 1
+	fi
+	echo.debug "$artifact latest version is $SDKMAN_VERSION."
+	versions+=("$SDKMAN_VERSION")
+fi
+for SDKMAN_VERSION in "${versions[@]}"; do
+
+	filename="${SDKMAN_CANDIDATE}-${SDKMAN_VERSION}${extension}"
+	target_path=$(ore-artifact "$artifact")"/$filename"
+
+	if [[ -f "$target_path" ]]; then
+		echo.debug "$filename already exists."
+	else
+		readonly url="${SDKMAN_CANDIDATES_API}/broker/download/${SDKMAN_CANDIDATE}/${SDKMAN_VERSION}/${SDKMAN_PLATFORM}"
+		(
+			set -x
+			curl -L --fail "$url" -o "$target_path"
+		)
+	fi
+
+done
