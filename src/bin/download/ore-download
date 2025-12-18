@@ -26,10 +26,6 @@ while getopts "hg:" arg; do
 done
 shift $((OPTIND - 1))
 
-if [[ $# -eq 0 ]]; then
-	usage >&2
-	exit 0
-fi
 artifacts=()
 artifacts+=("$@")
 
@@ -38,6 +34,12 @@ for group in "${groups[@]}"; do
     artifacts+=("$artifact")
   done < <(ore-config '.download.'"$group"'[][].name')
 done
+
+if [[ ${#artifacts[@]} -eq 0 ]]; then
+  usage >&2
+  exit 0
+fi
+
 echo.debug "downloading:" "${artifacts[@]}"
 
 for artifact in "${artifacts[@]}"; do
