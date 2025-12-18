@@ -4,7 +4,7 @@
 source /usr/lib/ore/ore-init
 
 usage() {
-	echo "Usage: $(basename "$0") [-h] artifact_name"
+	echo "Usage: $(basename "$0") [-h] artifact..."
 }
 
 while getopts "h" arg; do
@@ -21,43 +21,45 @@ while getopts "h" arg; do
 done
 shift $((OPTIND - 1))
 
-if [[ $# -ne 1 ]]; then
+if [[ $# -eq 0 ]]; then
 	usage >&2
 	exit 0
 fi
+artifacts="$*"
 
-readonly artifact_name=$1
+for artifact in $artifacts; do
 
-download_type=$(ore-config '.download | to_entries | .[] | .value | to_entries | .[] | select(.value[] | select(.name == "'"$artifact_name"'")) | .key')
-options=$(ore-config '.download | to_entries | .[] | .value | to_entries | .[] | .value[]| select(.name == "'"$artifact_name"'")')
+	download_type=$(ore-config '.download | to_entries | .[] | .value | to_entries | .[] | select(.value[] | select(.name == "'"$artifact"'")) | .key')
+	options=$(ore-config '.download | to_entries | .[] | .value | to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
 
-# Check if multiple download types were found
-line_count=$(echo "$download_type" | grep -c '^')
-if [[ $line_count -gt 1 ]]; then
-	echo.error "Error: Multiple download types found for artifact '$artifact_name'"
-	echo.error "Found: $download_type"
-	exit 2
-fi
+	# Check if multiple download types were found
+	line_count=$(echo "$download_type" | grep -c '^')
+	if [[ $line_count -gt 1 ]]; then
+		echo.error "Error: Multiple download types found for artifact '$artifact'"
+		echo.error "Found: $download_type"
+		exit 2
+	fi
 
-if [[ "$download_type" == "url" ]]; then
-	"$ORE_LIB_HOME/ore-download-url" "$artifact_name" "$options"
+	if [[ "$download_type" == "url" ]]; then
+		"$ORE_LIB_HOME/ore-download-url" "$artifact" "$options"
 
-elif [[ "$download_type" == "url-template-version" ]]; then
-	"$ORE_LIB_HOME/ore-download-url-template-version" "$artifact_name" "$options"
+	elif [[ "$download_type" == "url-template-version" ]]; then
+		"$ORE_LIB_HOME/ore-download-url-template-version" "$artifact" "$options"
 
-elif [[ "$download_type" == "sdkman" ]]; then
-	"$ORE_LIB_HOME/ore-download-sdkman" "$artifact_name" "$options"
+	elif [[ "$download_type" == "sdkman" ]]; then
+		"$ORE_LIB_HOME/ore-download-sdkman" "$artifact" "$options"
 
-elif [[ "$download_type" == "github" ]]; then
-	"$ORE_LIB_HOME/ore-download-github" "$artifact_name" "$options"
+	elif [[ "$download_type" == "github" ]]; then
+		"$ORE_LIB_HOME/ore-download-github" "$artifact" "$options"
 
-elif [[ "$download_type" == "jfrog" ]]; then
-	"$ORE_LIB_HOME/ore-download-jfrog" "$artifact_name" "$options"
+	elif [[ "$download_type" == "jfrog" ]]; then
+		"$ORE_LIB_HOME/ore-download-jfrog" "$artifact" "$options"
 
-elif [[ "$download_type" == "custom" ]]; then
-	"$ORE_LIB_HOME/ore-download-custom" "$artifact_name" "$options"
+	elif [[ "$download_type" == "custom" ]]; then
+		"$ORE_LIB_HOME/ore-download-custom" "$artifact" "$options"
 
-else
-	echo.error "Artifact not supported: $artifact_name"
-	exit 2
-fi
+	else
+		echo.error "Artifact not supported: $artifact"
+		exit 2
+	fi
+done
