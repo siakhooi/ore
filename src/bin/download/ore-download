@@ -48,6 +48,9 @@ elif [[ "$download_type" == "url-template-version" ]]; then
 elif [[ "$download_type" == "sdkman" ]]; then
 	"$ORE_LIB_HOME/ore-download-sdkman" "$artifact_name" "$options"
 
+elif [[ "$download_type" == "github" ]]; then
+	"$ORE_LIB_HOME/ore-download-github" "$artifact_name" "$options"
+
 else
 	echo.error "Artifact not supported: $artifact_name"
 	exit 2

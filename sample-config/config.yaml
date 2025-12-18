@@ -41,3 +41,9 @@ download:
         versions:
           - 21.0.9-ms
           - 17.0.17-ms
+
+    github:
+      - name: yq
+        repo: mikefarah/yq
+        assetMatcherQuery: ^yq_linux_amd64$
+        filenameStrategy: artifact-version

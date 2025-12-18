@@ -1,0 +1,77 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name options"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+readonly options=$2
+
+# shellcheck disable=SC2089
+readonly DEFAULT_VERSION_CAPTURE_QUERY='.tag_name | sub("^v"; "")'
+readonly DEFAULT_FILENAME_STRATEGY="original"
+
+repo=$(echo "$options" | yq -r '.repo')
+version_capture_query=$(echo "$options" | yq -r '.versionCaptureQuery // ""')
+asset_matcher_query=$(echo "$options" | yq -r '.assetMatcherQuery')
+filename_strategy=$(echo "$options" | yq -r '.filenameStrategy // ""')
+filename_extension=$(echo "$options" | yq -r '.filenameExtension // ""')
+version_capture_query=${version_capture_query:-$DEFAULT_VERSION_CAPTURE_QUERY}
+filename_strategy=${filename_strategy:-$DEFAULT_FILENAME_STRATEGY}
+
+set -e
+latest=$(curl --no-progress-meter "https://api.github.com/repos/$repo/releases/latest")
+
+VERSION=$(echo "$latest" | jq -r "$version_capture_query")
+echo.debug "$artifact latest version is $VERSION."
+
+DOWNLOAD_URL=$(echo "$latest" | jq -r '.assets[]|select(.name|test("'"$asset_matcher_query"'"))|.browser_download_url')
+if [[ -z "$DOWNLOAD_URL" ]]; then
+	echo.error "Unable to determine download url"
+	exit 1
+fi
+
+if [[ "$filename_strategy" == 'original' ]]; then
+	target_file=$(basename "$DOWNLOAD_URL")
+elif [[ "$filename_strategy" == 'artifact-version' ]]; then
+	target_file="${artifact}-${VERSION}${filename_extension}"
+else
+	echo.error "Unsupported filename strategy: $filename_strategy"
+	exit 1
+fi
+
+if [[ -z $target_file ]]; then
+	echo.error "Unable to determinte target file"
+	exit 2
+
+fi
+
+target_path=$(ore-artifact "$artifact")"/$target_file"
+
+mkdir -p "$(dirname "$target_path")"
+
+if [[ -f "$target_path" ]]; then
+	echo.debug "$target_file already exists." >&2
+else
+	(
+		set -x
+		curl -L --fail "$DOWNLOAD_URL" -o "$target_path"
+	)
+fi
