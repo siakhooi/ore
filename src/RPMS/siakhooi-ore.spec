@@ -43,10 +43,12 @@ fi
 %{_bindir}/ore-config
 %{_bindir}/ore-config-edit
 %{_bindir}/ore-config-set
+%{_bindir}/ore-distribute
 %{_bindir}/ore-download
 %{_bindir}/ore-github-release-latest-get
 %{_bindir}/ore-sdkman-java-list
 %{_bindir}/ore-version
+%{_libdir}/ore/ore-distribute-app
 %{_libdir}/ore/ore-download-custom
 %{_libdir}/ore/ore-download-github
 %{_libdir}/ore/ore-download-jfrog
