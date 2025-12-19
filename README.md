@@ -1,5 +1,5 @@
 # ore
-tools to automatically download,distribute,housekeep artifacts from various sources
+tools to automatically download,distribute artifacts from various sources
 
 ## Installation
 ### Deb
