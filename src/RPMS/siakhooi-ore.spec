@@ -60,6 +60,7 @@ fi
 %changelog
 * Thu Dec 18 2025 Siak Hooi <siakhooi@gmail.com> - 0.17.0
 - add ore-download(sdkman, github, jfrog, custom), multiple artifact support, download by group support
+- add ore-distribute(app)
 
 * Tue Dec 16 2025 Siak Hooi <siakhooi@gmail.com> - 0.16.0
 - add ore-download(url-template-version)

@@ -31,8 +31,8 @@ alwaysDownload=$(echo "$options" | yq -r '.alwaysDownload // ""')
 is-true "$alwaysDownload" && echo.debug "alwaysDownload is on"
 
 # shellcheck disable=SC2016
-echo "$options" | yq -r '.urls[] | [.baseurl, .template // "", .target_format] | join(",")' | nl -v 0 -w 1 -s ',' |
-	while IFS=, read -r index baseurl template target_format; do
+echo "$options" | yq -r '.urls[] | [.baseurl, .template // "", .targetFormat] | join(",")' | nl -v 0 -w 1 -s ',' |
+	while IFS=, read -r index baseurl template targetFormat; do
 
 		# shellcheck disable=SC2016
 		template=${template:-'${version}'}
@@ -41,10 +41,10 @@ echo "$options" | yq -r '.urls[] | [.baseurl, .template // "", .target_format] |
 			while read -r version; do
 
 				url=${baseurl//$template/$version}
-				if [[ -z "$target_format" ]]; then
+				if [[ -z "$targetFormat" ]]; then
 					filename=$(basename "$url")
 				else
-					filename=${target_format//\$\{version\}/$version}
+					filename=${targetFormat//\$\{version\}/$version}
 				fi
 
 				target_path=$(ore-artifact "$artifact")"/$filename"

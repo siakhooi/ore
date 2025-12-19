@@ -1,0 +1,85 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name path artifact_version source_path config"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 4 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+readonly artifact_version=$2
+readonly source_path=$3
+readonly config=$4
+set -e
+
+target_home=$(ore-config .artifacts.distribution.app)
+mkdir -p "$target_home"
+
+target_basename=${artifact}-${artifact_version}
+target_path=$target_home/$target_basename
+
+if [[ -d $target_path ]]; then
+	echo.debug "Distribute $artifact: $artifact_version already exists."
+else
+
+	echo "Distribute $artifact: $artifact_version"
+	extract_method=$(echo "$config" | yq -r '.extractMethod // ""')
+	if [[ -z $extract_method ]]; then
+		if [[ "$source_path" =~ \.zip$ ]]; then
+			extract_method="zip"
+
+		elif [[ "$source_path" =~ \.((tar)|(tgz)|(tar\.gz)|(tar\.xz)|(txz)|(tar\.bz2)|(tbz2))$ ]]; then
+			extract_method="tar"
+		fi
+	fi
+	create_directory=$(echo "$config" | yq -r '.createDirectory // ""')
+	echo.debug "Extract method: $extract_method"
+	echo.debug "Create directory: $create_directory"
+
+	if [[ -z $extract_method ]]; then
+		echo.error "Cannot determine extract method for $artifact from $source_path"
+		exit 1
+	fi
+
+	tempDir=$(mktemp -d --tmpdir "$(basename "$0")-XXXXXXXXXX")
+	cd "$tempDir" || exit 1
+
+	(
+		if is-true "$create_directory"; then
+			mkdir -p "$target_basename"
+			cd "$target_basename"
+		fi
+
+		if [[ "$extract_method" == "zip" ]]; then
+			unzip -q "$source_path"
+
+		elif [[ "$extract_method" == "tar" ]]; then
+
+			tar xf "$source_path"
+
+		else
+			echo.error "Unsupported extract method: $extract_method"
+			exit 1
+		fi
+	)
+	dirName=$(find . -maxdepth 1 -type d -not -name ".*")
+	touch "$dirName"
+	mv "$dirName" "$target_path"
+	(cd "$target_home" && ln -s -f -T "$target_basename" "$artifact")
+
+fi

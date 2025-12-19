@@ -1,5 +1,7 @@
 artifacts:
   home: /path/to/keep/ore/downloaded/artifacts
+  distribute:
+    app: /path/to/app
 jfrog:
   default:
     url: https://jfrog1.example.com/api/storage
@@ -63,3 +65,12 @@ download:
         path: releases/com/example/artifact3
         fileRegex: ^\\/artifact3-.*-jar-with-dependencies.jar$
         extension: .jar
+
+distribution:
+  app:
+    - name: gradle
+    - name: jacoco
+      createDirectory: Y
+      versionRegex: ^jacoco-v\(.*\).zip$
+    - name: artifact1
+      extractMethod: zip
