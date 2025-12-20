@@ -34,6 +34,7 @@ sudo yum install siakhooi-ore
 - `ore-artifact`
 - `ore-distribute`
 - `ore-download`
+- `ore-run`
 - `ore-version`
 - `ore-github-release-latest-get`
 - `ore-sdkman-java-list`
