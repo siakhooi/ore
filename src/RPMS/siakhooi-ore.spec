@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.17.0
+Version:        0.19.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -60,7 +60,10 @@ fi
 /usr/share/ore/schemas/ore-artifacts-config.yaml
 
 %changelog
-* Thu Dec 18 2025 Siak Hooi <siakhooi@gmail.com> - 0.17.0
+* Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.18.0
+- add ore-distribute(app with versions)
+
+* Fri Dec 19 2025 Siak Hooi <siakhooi@gmail.com> - 0.17.0
 - add ore-download(sdkman, github, jfrog, custom), multiple artifact support, download by group support
 - add ore-distribute(app)
 

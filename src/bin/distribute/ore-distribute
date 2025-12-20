@@ -31,22 +31,14 @@ version=$2
 distribution_type=$(ore-config '.distribution | to_entries | .[] | select(.value[] | select(.name == "'"$artifact"'")) | .key')
 config=$(ore-config '.distribution |  to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
 
-if [[ $# -eq 2 ]]; then
-	source_path=$(ore-artifact "$artifact" "$version")
-else
-	source_path=$(ore-artifact -l "$artifact")
-  versionRegex=$(echo "$config"|yq -r '.versionRegex // ""' )
-	readonly default_version_regex='^'$artifact'-\([^-]*\)\(\.zip\|\.tgz\|\.tar\.gz\|\.tar\.bz2\|\.tar\.xz\|\.tbz2\|\.txz\|\.tar\)$'
-	versionRegex=${versionRegex:-$default_version_regex}
-	version=$(basename "$source_path" | sed 's/'"$versionRegex"'/\1/')
-
-fi
 echo.debug "Distribution type: $distribution_type"
 echo.debug "Artifact: $artifact"
-echo.debug "Source path: $source_path"
-echo.debug "Version: $version"
+options=("$artifact" "$config")
 
-options=("$artifact" "$version" "$source_path" "$config")
+if [[ $# -eq 2 ]]; then
+	echo.debug "Version: $version"
+	options+=("$version")
+fi
 
 if [[ "$distribution_type" == "app" ]]; then
 	"$ORE_LIB_HOME/ore-distribute-app" "${options[@]}"

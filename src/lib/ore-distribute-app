@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-	echo "Usage: $(basename "$0") [-h] artifact_name path artifact_version source_path config"
+	echo "Usage: $(basename "$0") [-h] artifact_name config [artifact_version]"
 }
 while getopts "h" arg; do
 	case $arg in
@@ -16,70 +16,98 @@ while getopts "h" arg; do
 	esac
 done
 shift $((OPTIND - 1))
-if [[ $# -ne 4 ]]; then
+if [[ $# -ne 2 ]] && [[ $# -ne 3 ]]; then
 	usage
 	exit 0
 fi
 
 readonly artifact=$1
-readonly artifact_version=$2
-readonly source_path=$3
-readonly config=$4
+readonly config=$2
+artifact_version=$3
 set -e
 
-target_home=$(ore-config .artifacts.distribution.app)
-mkdir -p "$target_home"
+versions=()
 
-target_basename=${artifact}-${artifact_version}
-target_path=$target_home/$target_basename
+if [[ $# -eq 3 ]]; then
+	source_path=$(ore-artifact "$artifact" "$artifact_version")
+	versions+=("$artifact_version")
 
-if [[ -d $target_path ]]; then
-	echo.debug "Distribute $artifact: $artifact_version already exists."
-else
+elif [[ $# -eq 2 ]]; then
+	hasVersion=$(echo "$config" | yq -r '.versions // ""')
+	if [[ -n "$hasVersion" ]]; then
+		mapfile -t versions < <(echo "$config" | yq -r '.versions[]')
+	else # latest version
+		source_path=$(ore-artifact -l "$artifact")
+		versionRegex=$(echo "$config" | yq -r '.versionRegex // ""')
+		readonly default_version_regex='^'$artifact'-\([^-]*\)\(\.zip\|\.tgz\|\.tar\.gz\|\.tar\.bz2\|\.tar\.xz\|\.tbz2\|\.txz\|\.tar\)$'
+		versionRegex=${versionRegex:-$default_version_regex}
+		artifact_version=$(basename "$source_path" | sed 's/'"$versionRegex"'/\1/')
+		versions+=("$artifact_version")
+		echo.debug "latest artifact_version: $artifact_version"
 
-	echo "Distribute $artifact: $artifact_version"
-	extract_method=$(echo "$config" | yq -r '.extractMethod // ""')
-	if [[ -z $extract_method ]]; then
-		if [[ "$source_path" =~ \.zip$ ]]; then
-			extract_method="zip"
-
-		elif [[ "$source_path" =~ \.((tar)|(tgz)|(tar\.gz)|(tar\.xz)|(txz)|(tar\.bz2)|(tbz2))$ ]]; then
-			extract_method="tar"
-		fi
 	fi
-	create_directory=$(echo "$config" | yq -r '.createDirectory // ""')
-	echo.debug "Extract method: $extract_method"
-	echo.debug "Create directory: $create_directory"
-
-	if [[ -z $extract_method ]]; then
-		echo.error "Cannot determine extract method for $artifact from $source_path"
-		exit 1
-	fi
-
-	tempDir=$(mktemp -d --tmpdir "$(basename "$0")-XXXXXXXXXX")
-	cd "$tempDir" || exit 1
-
-	(
-		if is-true "$create_directory"; then
-			mkdir -p "$target_basename"
-			cd "$target_basename"
-		fi
-
-		if [[ "$extract_method" == "zip" ]]; then
-			unzip -q "$source_path"
-
-		elif [[ "$extract_method" == "tar" ]]; then
-
-			tar xf "$source_path"
-
-		else
-			echo.error "Unsupported extract method: $extract_method"
-			exit 1
-		fi
-	)
-	dirName=$(find . -maxdepth 1 -type d -not -name ".*")
-	touch "$dirName"
-	mv "$dirName" "$target_path"
-	(cd "$target_home" && ln -s -f -T "$target_basename" "$artifact")
 
 fi
+for artifact_version in "${versions[@]}"; do
+
+	source_path=$(ore-artifact "$artifact" "$artifact_version")
+	echo.debug "Source path: $source_path"
+
+	target_home=$(ore-config .artifacts.distribution.app)
+	mkdir -p "$target_home"
+
+	target_basename=${artifact}-${artifact_version}
+	target_path=$target_home/$target_basename
+
+	if [[ -d $target_path ]]; then
+		echo.debug "Distribute $artifact: $artifact_version already exists."
+	else
+
+		echo "Distribute $artifact: $artifact_version"
+		extract_method=$(echo "$config" | yq -r '.extractMethod // ""')
+		if [[ -z $extract_method ]]; then
+			if [[ "$source_path" =~ \.zip$ ]]; then
+				extract_method="zip"
+
+			elif [[ "$source_path" =~ \.((tar)|(tgz)|(tar\.gz)|(tar\.xz)|(txz)|(tar\.bz2)|(tbz2))$ ]]; then
+				extract_method="tar"
+			fi
+		fi
+		create_directory=$(echo "$config" | yq -r '.createDirectory // ""')
+
+		echo.debug "Extract method: $extract_method"
+		echo.debug "Create directory: $create_directory"
+
+		if [[ -z $extract_method ]]; then
+			echo.error "Cannot determine extract method for $artifact from $source_path"
+			exit 1
+		fi
+
+		tempDir=$(mktemp -d --tmpdir "$(basename "$0")-XXXXXXXXXX")
+		cd "$tempDir" || exit 1
+
+		(
+			if is-true "$create_directory"; then
+				mkdir -p "$target_basename"
+				cd "$target_basename"
+			fi
+
+			if [[ "$extract_method" == "zip" ]]; then
+				unzip -q "$source_path"
+
+			elif [[ "$extract_method" == "tar" ]]; then
+
+				tar xf "$source_path"
+
+			else
+				echo.error "Unsupported extract method: $extract_method"
+				exit 1
+			fi
+		)
+		dirName=$(find . -maxdepth 1 -type d -not -name ".*")
+		touch "$dirName"
+		mv "$dirName" "$target_path"
+		(cd "$target_home" && ln -s -f -T "$target_basename" "$artifact")
+
+	fi
+done
