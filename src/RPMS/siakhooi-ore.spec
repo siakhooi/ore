@@ -48,7 +48,10 @@ fi
 %{_bindir}/ore-github-release-latest-get
 %{_bindir}/ore-sdkman-java-list
 %{_bindir}/ore-version
+%{_libdir}/ore/ore-artifact-get-extract-method
+%{_libdir}/ore/ore-artifact-get-version-from-path
 %{_libdir}/ore/ore-distribute-app
+%{_libdir}/ore/ore-distribute-bin
 %{_libdir}/ore/ore-download-custom
 %{_libdir}/ore/ore-download-github
 %{_libdir}/ore/ore-download-jfrog
@@ -61,7 +64,7 @@ fi
 
 %changelog
 * Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.18.0
-- add ore-distribute(app with versions)
+- add ore-distribute(app with versions, bin)
 
 * Fri Dec 19 2025 Siak Hooi <siakhooi@gmail.com> - 0.17.0
 - add ore-download(sdkman, github, jfrog, custom), multiple artifact support, download by group support

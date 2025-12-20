@@ -1,0 +1,76 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name config [artifact_version]"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]] && [[ $# -ne 3 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+# config ($2) is not used in bin distribution, but keep it for consistent interface
+artifact_version=$3
+set -e
+
+target_home=$(ore-config .artifacts.distribution.bin)
+mkdir -p "$target_home"
+
+if [[ $# -eq 2 ]]; then
+	source_path=$(ore-artifact -l "$artifact")
+
+elif [[ $# -eq 3 ]]; then
+	source_path=$(ore-artifact "$artifact" "$artifact_version")
+	if [[ ! -f $source_path ]]; then
+		echo.error "$artifact version $artifact_version not exist"
+		exit 1
+	fi
+fi
+
+install_version=$("$ORE_LIB_HOME/ore-artifact-get-version-from-path"  "$artifact" "$source_path")
+target_basename=${artifact}-${install_version}
+target_path=$target_home/$target_basename
+
+if [[ -f $target_path ]]; then
+	echo.debug "Distribute $artifact: $install_version already exists." >&2
+else
+	echo "Distribute $artifact: $install_version"
+  extract_method=$("$ORE_LIB_HOME/ore-artifact-get-extract-method" "$artifact" "$source_path")
+  echo.debug "Extract method: $extract_method"
+
+	tempDir=$(mktemp -d --tmpdir "$(basename "$0")-XXXXXXXXXX")
+
+	if [[ "$extract_method" == "zip" ]]; then
+
+		(cd "$tempDir" && unzip -q "$source_path")
+		bin_source_path=$(find "$tempDir" -name "$artifact")
+
+	elif [[ "$extract_method" == "tar" ]]; then
+		(cd "$tempDir" && tar xf "$source_path")
+		ls -l "$tempDir"
+		bin_source_path=$(find "$tempDir" -name "$artifact")
+
+	elif [[ "$extract_method" == "copy" ]]; then
+		bin_source_path=$source_path
+	else
+		echo.error "Unsupported extract method: $extract_method"
+		exit 1
+	fi
+	echo "$bin_source_path" "$target_path"
+	cp -v "$bin_source_path" "$target_path"
+	(cd "$target_home" && ln -s -f "$target_basename" "$artifact")
+
+fi

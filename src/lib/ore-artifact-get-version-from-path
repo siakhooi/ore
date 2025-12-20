@@ -1,0 +1,55 @@
+#!/bin/bash
+
+usage() {
+  echo "Usage: $(basename "$0") [-h] artifact_name path"
+}
+while getopts "h" arg; do
+  case $arg in
+  h)
+    usage
+    exit 0
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+  esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]]; then
+  usage
+  exit 0
+fi
+
+readonly artifact_name=$1
+readonly artifact_path=$2
+
+versionRegex=$(ore-config '.distribution |  to_entries | .[] | .value[]| select(.name == "'"$artifact_name"'")|.versionRegex // ""')
+
+readonly default_version_regex='^'$artifact_name'-\([^-]*\)\(\.zip\|\.tgz\|\.tar\.gz\|\.tar\.bz2\|\.tar\.xz\|\.tbz2\|\.txz\|\.tar\)$'
+
+# define a regex to extract the version from the artifact name
+# it should be able to extract 1.0.0 as version from the following format:
+# artifact_name-1.0.0
+# artifact_name-1.0.0.zip
+# artifact_name-1.0.0.tgz
+# artifact_name-1.0.0.tar.gz
+# artifact_name-1.0.0.tar.bz2
+# artifact_name-1.0.0.tar.xz
+# artifact_name-1.0.0.tbz2
+# artifact_name-1.0.0.txz
+# artifact_name-1.0.0.tar
+# artifact_name-v1.0.0
+# artifact_name-v1.0.0.zip
+# artifact_name-v1.0.0.tgz
+# artifact_name-v1.0.0.tar.gz
+# artifact_name-v1.0.0.tar.bz2
+# artifact_name-v1.0.0.tar.xz
+# artifact_name-v1.0.0.tbz2
+# artifact_name-v1.0.0.txz
+# artifact_name-v1.0.0.tar
+
+versionRegex=${versionRegex:-$default_version_regex}
+
+basename "$artifact_path" | sed 's/'"$versionRegex"'/\1/'
+

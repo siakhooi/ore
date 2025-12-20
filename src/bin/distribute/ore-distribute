@@ -43,6 +43,9 @@ fi
 if [[ "$distribution_type" == "app" ]]; then
 	"$ORE_LIB_HOME/ore-distribute-app" "${options[@]}"
 
+elif [[ "$distribution_type" == "bin" ]]; then
+  "$ORE_LIB_HOME/ore-distribute-bin" "${options[@]}"
+
 
 else
 	echo.error "Artifact not supported: $artifact"

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+usage() {
+  echo "Usage: $(basename "$0") [-h] artifact_name path"
+}
+while getopts "h" arg; do
+  case $arg in
+  h)
+    usage
+    exit 0
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+  esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]]; then
+  usage
+  exit 0
+fi
+
+readonly artifact_name=$1
+readonly artifact_path=$2
+
+extractMethod=$(ore-config '.distribution |  to_entries | .[] | .value[]| select(.name == "'"$artifact_name"'")|.extractMethod // ""')
+
+  if [[ -n $extractMethod ]]; then
+  echo "$extractMethod"
+
+elif [[ "$artifact_path" =~ \.zip$ ]]; then
+  echo "zip"
+
+elif [[ "$artifact_path" =~ \.((tar)|(tgz)|(tar\.gz)|(tar\.xz)|(txz)|(tar\.bz2)|(tbz2))$ ]]; then
+  echo "tar"
+fi
