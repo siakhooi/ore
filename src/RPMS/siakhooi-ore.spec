@@ -67,6 +67,7 @@ fi
 %changelog
 * Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.18.0
 - add ore-distribute(app with versions, bin, custom, deb)
+- ore-artifact to support (-c, copy file)
 
 * Fri Dec 19 2025 Siak Hooi <siakhooi@gmail.com> - 0.17.0
 - add ore-download(sdkman, github, jfrog, custom), multiple artifact support, download by group support
