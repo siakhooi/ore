@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.18.0
+Version:        0.19.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -16,13 +16,9 @@ certificate generators for development purposes.
 %install
 %{__mkdir}   -v -p %{buildroot}%{_bindir}
 %{__mkdir}   -v -p %{buildroot}%{_libdir}/ore
-%{__mkdir}   -v -p %{buildroot}/usr/share/ore/samples
-%{__mkdir}   -v -p %{buildroot}/usr/share/ore/schemas
 %{__mkdir}   -v -p %{buildroot}/usr/share/licenses/siakhooi-ore
 %{__install} -v -m 0755 %{_topdir}/BUILD/usr/bin/* %{buildroot}%{_bindir}
 %{__install} -v -m 0755 %{_topdir}/BUILD/usr/lib/ore/* %{buildroot}%{_libdir}/ore
-%{__install} -v -m 644  %{_topdir}/BUILD/usr/share/ore/samples/* %{buildroot}/usr/share/ore/samples
-%{__install} -v -m 644  %{_topdir}/BUILD/usr/share/ore/schemas/* %{buildroot}/usr/share/ore/schemas
 %{__install} -v -m 644  %{_topdir}/BUILD/LICENSE                 %{buildroot}/usr/share/licenses/siakhooi-ore
 
 %post
@@ -36,10 +32,6 @@ fi
 %files
 %license LICENSE
 %{_bindir}/ore-artifact
-%{_bindir}/ore-artifacts-config
-%{_bindir}/ore-artifacts-config-sample
-%{_bindir}/ore-artifacts-config-validate
-%{_bindir}/ore-artifacts-list
 %{_bindir}/ore-config
 %{_bindir}/ore-config-edit
 %{_bindir}/ore-config-set
@@ -62,8 +54,6 @@ fi
 %{_libdir}/ore/ore-download-url
 %{_libdir}/ore/ore-download-url-template-version
 %{_libdir}/ore/ore-init
-/usr/share/ore/samples/ore-artifacts-config.yaml
-/usr/share/ore/schemas/ore-artifacts-config.yaml
 
 %changelog
 * Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.18.0

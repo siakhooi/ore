@@ -24,9 +24,6 @@ sudo yum install siakhooi-ore
 - `ore-config`
 - `ore-config-{set,edit}`
 - `ore-artifact`
-- `ore-artifacts-config`
-- `ore-artifacts-config-{sample, validate}`
-- `ore-artifacts-list`
 - `ore-distribute`
 - `ore-download`
 - `ore-version`
