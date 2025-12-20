@@ -52,6 +52,9 @@ elif [[ "$distribution_type" == "custom" ]]; then
 elif [[ "$distribution_type" == "deb" ]]; then
   "$ORE_LIB_HOME/ore-distribute-deb" "${options[@]}"
 
+elif [[ "$distribution_type" == "jarcli" ]]; then
+  "$ORE_LIB_HOME/ore-distribute-jarcli" "${options[@]}"
+
 else
 	echo.error "Artifact not supported: $artifact"
 	exit 2

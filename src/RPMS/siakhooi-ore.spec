@@ -54,6 +54,7 @@ fi
 %{_libdir}/ore/ore-distribute-bin
 %{_libdir}/ore/ore-distribute-custom
 %{_libdir}/ore/ore-distribute-deb
+%{_libdir}/ore/ore-distribute-jarcli
 %{_libdir}/ore/ore-download-custom
 %{_libdir}/ore/ore-download-github
 %{_libdir}/ore/ore-download-jfrog
@@ -66,7 +67,7 @@ fi
 
 %changelog
 * Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.18.0
-- add ore-distribute(app with versions, bin, custom, deb)
+- add ore-distribute(app with versions, bin, custom, deb, jarcli)
 - ore-artifact to support (-c, copy file)
 
 * Fri Dec 19 2025 Siak Hooi <siakhooi@gmail.com> - 0.17.0
