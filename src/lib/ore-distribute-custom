@@ -1,0 +1,75 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name config [artifact_version]"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]] && [[ $# -ne 3 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+readonly config=$2
+artifact_version=$3
+set -e
+
+if [[ $# -eq 2 ]]; then
+	source_path=$(ore-artifact -l "$artifact")
+
+elif [[ $# -eq 3 ]]; then
+	source_path=$(ore-artifact "$artifact" "$artifact_version")
+	if [[ ! -f $source_path ]]; then
+		echo.error "$artifact version $artifact_version not exist"
+		exit 1
+	fi
+fi
+install_version=$("$ORE_LIB_HOME/ore-artifact-get-version-from-path" "$artifact" "$source_path")
+echo.debug "Install version: $install_version"
+
+install_location=$(echo "$config" | yq -r '.installLocation // ""')
+default_install_location=$(ore-config .artifacts.distribution.custom)
+
+target_home=${install_location:-$default_install_location}
+mkdir -p "$target_home"
+
+target_basename=${artifact}-${install_version}
+target_path=$target_home/$target_basename
+
+if [[ -d $target_path ]]; then
+	echo.debug "Distribute $artifact: $install_version already exists." >&2
+else
+	distributor=$(echo "$config" | yq -r '.script // ""')
+	distributor=${distributor:-$artifact}
+	distributor_path="$ORE_HOME/custom-distributor/$distributor"
+
+	echo.debug "distributor: $distributor"
+	echo.debug "distributor_path: $distributor_path"
+
+	if [[ -z "$distributor" ]]; then
+		echo.error "No distributor specified for $artifact."
+		exit 1
+	fi
+	if [[ ! -f "$distributor_path" ]]; then
+		echo.error "Distributor for $artifact not found. ($distributor_path)"
+		exit 2
+	fi
+	if [[ ! -x "$distributor_path" ]]; then
+		echo.error "Distributor for $artifact is not executable. ($distributor_path)"
+		exit 3
+	fi
+	$distributor_path "$artifact" "$source_path" "$target_path"
+
+fi
