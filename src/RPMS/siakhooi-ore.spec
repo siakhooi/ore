@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.19.0
+Version:        0.18.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -52,6 +52,8 @@ fi
 %{_libdir}/ore/ore-artifact-get-version-from-path
 %{_libdir}/ore/ore-distribute-app
 %{_libdir}/ore/ore-distribute-bin
+%{_libdir}/ore/ore-distribute-custom
+%{_libdir}/ore/ore-distribute-deb
 %{_libdir}/ore/ore-download-custom
 %{_libdir}/ore/ore-download-github
 %{_libdir}/ore/ore-download-jfrog
@@ -64,7 +66,7 @@ fi
 
 %changelog
 * Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.18.0
-- add ore-distribute(app with versions, bin, custom)
+- add ore-distribute(app with versions, bin, custom, deb)
 
 * Fri Dec 19 2025 Siak Hooi <siakhooi@gmail.com> - 0.17.0
 - add ore-download(sdkman, github, jfrog, custom), multiple artifact support, download by group support

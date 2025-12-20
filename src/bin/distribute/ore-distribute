@@ -49,6 +49,8 @@ elif [[ "$distribution_type" == "bin" ]]; then
 elif [[ "$distribution_type" == "custom" ]]; then
   "$ORE_LIB_HOME/ore-distribute-custom" "${options[@]}"
 
+elif [[ "$distribution_type" == "deb" ]]; then
+  "$ORE_LIB_HOME/ore-distribute-deb" "${options[@]}"
 
 else
 	echo.error "Artifact not supported: $artifact"

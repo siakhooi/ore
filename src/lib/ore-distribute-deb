@@ -1,0 +1,54 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] artifact_name config [artifact_version]"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 2 ]] && [[ $# -ne 3 ]]; then
+	usage
+	exit 0
+fi
+
+readonly artifact=$1
+# config ($2) is not used in bin distribution, but keep it for consistent interface
+artifact_version=$3
+set -e
+
+if [[ $# -eq 2 ]]; then
+	source_path=$(ore-artifact -l "$artifact")
+
+elif [[ $# -eq 3 ]]; then
+	source_path=$(ore-artifact "$artifact" "$artifact_version")
+	if [[ ! -f $source_path ]]; then
+		echo.error "$artifact version $artifact_version not exist"
+		exit 1
+	fi
+fi
+echo.debug "Source path: $source_path"
+
+use_sudo=$(ore-config .artifacts.distribution.deb.useSudo // false)
+echo.debug "Use sudo: $use_sudo"
+
+if [[ $use_sudo == true ]]; then
+	(
+		set -x
+		sudo apt install -y "$source_path"
+	)
+else
+	(
+		set -x
+		apt install -y "$source_path"
+	)
+fi
