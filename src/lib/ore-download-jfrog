@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-	echo "Usage: $(basename "$0") [-h] artifact_name options"
+	echo "Usage: $(basename "$0") [-h] artifact_name config"
 }
 while getopts "h" arg; do
 	case $arg in
@@ -22,7 +22,7 @@ if [[ $# -ne 2 ]]; then
 fi
 
 readonly artifact=$1
-readonly options=$2
+readonly config=$2
 
 jfrog_get() {
 	local path=$1
@@ -32,15 +32,15 @@ jfrog_get() {
 	curl "${opts[@]}" "$jfrog_server_url/${path}"
 }
 
-jfrog_path=$(echo "$options" | yq -r '.path')
-jfrog_artifact_name=$(echo "$options" | yq -r '.jfrogArtifactName')
+jfrog_path=$(echo "$config" | yq -r '.path')
+jfrog_artifact_name=$(echo "$config" | yq -r '.jfrogArtifactName')
 jfrog_artifact_name=${jfrog_artifact_name:-$artifact}
-artifact_extension=$(echo "$options" | yq -r '.extension // ".zip"')
-jfrog_version=$(echo "$options" | yq -r '.version // ""')
-jfrog_server=$(echo "$options" | yq -r '.server // "default"')
+artifact_extension=$(echo "$config" | yq -r '.extension // ".zip"')
+jfrog_version=$(echo "$config" | yq -r '.version // ""')
+jfrog_server=$(echo "$config" | yq -r '.server // "default"')
 jfrog_server_url=$(ore-config ".jfrog.${jfrog_server}.url")
 jfrg_server_user=$(ore-config ".jfrog.${jfrog_server}.user")
-artifact_regex=$(echo "$options" | yq -r '.fileRegex // ""')
+artifact_regex=$(echo "$config" | yq -r '.fileRegex // ""')
 artifact_regex=${artifact_regex:-"\\\\/.*$jfrog_artifact_name.*\\\\$artifact_extension"}
 
 echo.debug "jfrog_path: $jfrog_path"

@@ -4,7 +4,7 @@ readonly SDKMAN_CANDIDATES_API="https://api.sdkman.io/2"
 readonly SDKMAN_PLATFORM=linuxx64
 readonly DEFAULT_EXTENSION=".zip"
 usage() {
-	echo "Usage: $(basename "$0") [-h] artifact_name options"
+	echo "Usage: $(basename "$0") [-h] artifact_name config"
 }
 while getopts "h" arg; do
 	case $arg in
@@ -25,19 +25,19 @@ if [[ $# -ne 2 ]]; then
 fi
 
 readonly artifact=$1
-readonly options=$2
+readonly config=$2
 readonly SDKMAN_CANDIDATE=$artifact
 SDKMAN_VERSION=$3
 
 zip_home=$(ore-artifact "$artifact")
 mkdir -p "$zip_home"
 
-extension=$(echo "$options" | yq -r '.extension // "'$DEFAULT_EXTENSION'"')
-has_versions=$(echo "$options" | yq '.versions != null')
+extension=$(echo "$config" | yq -r '.extension // "'$DEFAULT_EXTENSION'"')
+has_versions=$(echo "$config" | yq '.versions != null')
 versions=()
 
 if is-true "$has_versions"; then
-	mapfile -t versions < <(echo "$options" | yq -r '.versions[]')
+	mapfile -t versions < <(echo "$config" | yq -r '.versions[]')
 else
 	URL_DEFAULT_VERSION="${SDKMAN_CANDIDATES_API}/candidates/default/${SDKMAN_CANDIDATE}"
 	SDKMAN_VERSION=$(curl --no-progress-meter "$URL_DEFAULT_VERSION")

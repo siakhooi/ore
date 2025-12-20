@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-	echo "Usage: $(basename "$0") [-h] artifact_name options"
+	echo "Usage: $(basename "$0") [-h] artifact_name config"
 }
 while getopts "h" arg; do
 	case $arg in
@@ -22,22 +22,22 @@ if [[ $# -ne 2 ]]; then
 fi
 
 readonly artifact=$1
-readonly options=$2
+readonly config=$2
 
 zip_home=$(ore-artifact "$artifact")
 mkdir -p "$zip_home"
 
-alwaysDownload=$(echo "$options" | yq -r '.alwaysDownload // ""')
+alwaysDownload=$(echo "$config" | yq -r '.alwaysDownload // ""')
 is-true "$alwaysDownload" && echo.debug "alwaysDownload is on"
 
 # shellcheck disable=SC2016
-echo "$options" | yq -r '.urls[] | [.baseurl, .template // "", .targetFormat] | join(",")' | nl -v 0 -w 1 -s ',' |
+echo "$config" | yq -r '.urls[] | [.baseurl, .template // "", .targetFormat] | join(",")' | nl -v 0 -w 1 -s ',' |
 	while IFS=, read -r index baseurl template targetFormat; do
 
 		# shellcheck disable=SC2016
 		template=${template:-'${version}'}
 
-		echo "$options" | yq -r ".urls[$index]|.versions[]" |
+		echo "$config" | yq -r ".urls[$index]|.versions[]" |
 			while read -r version; do
 
 				url=${baseurl//$template/$version}

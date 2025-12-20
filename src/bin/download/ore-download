@@ -45,7 +45,7 @@ echo.debug "downloading:" "${artifacts[@]}"
 for artifact in "${artifacts[@]}"; do
 
 	download_type=$(ore-config '.download | to_entries | .[] | .value | to_entries | .[] | select(.value[] | select(.name == "'"$artifact"'")) | .key')
-	options=$(ore-config '.download | to_entries | .[] | .value | to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
+	config=$(ore-config '.download | to_entries | .[] | .value | to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
 
 	# Check if multiple download types were found
 	line_count=$(echo "$download_type" | grep -c '^')
@@ -56,22 +56,22 @@ for artifact in "${artifacts[@]}"; do
 	fi
 
 	if [[ "$download_type" == "url" ]]; then
-		"$ORE_LIB_HOME/ore-download-url" "$artifact" "$options"
+		"$ORE_LIB_HOME/ore-download-url" "$artifact" "$config"
 
 	elif [[ "$download_type" == "url-template-version" ]]; then
-		"$ORE_LIB_HOME/ore-download-url-template-version" "$artifact" "$options"
+		"$ORE_LIB_HOME/ore-download-url-template-version" "$artifact" "$config"
 
 	elif [[ "$download_type" == "sdkman" ]]; then
-		"$ORE_LIB_HOME/ore-download-sdkman" "$artifact" "$options"
+		"$ORE_LIB_HOME/ore-download-sdkman" "$artifact" "$config"
 
 	elif [[ "$download_type" == "github" ]]; then
-		"$ORE_LIB_HOME/ore-download-github" "$artifact" "$options"
+		"$ORE_LIB_HOME/ore-download-github" "$artifact" "$config"
 
 	elif [[ "$download_type" == "jfrog" ]]; then
-		"$ORE_LIB_HOME/ore-download-jfrog" "$artifact" "$options"
+		"$ORE_LIB_HOME/ore-download-jfrog" "$artifact" "$config"
 
 	elif [[ "$download_type" == "custom" ]]; then
-		"$ORE_LIB_HOME/ore-download-custom" "$artifact" "$options"
+		"$ORE_LIB_HOME/ore-download-custom" "$artifact" "$config"
 
 	else
 		echo.error "Artifact not supported: $artifact"

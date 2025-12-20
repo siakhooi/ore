@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-	echo "Usage: $(basename "$0") [-h] artifact_name options"
+	echo "Usage: $(basename "$0") [-h] artifact_name config"
 }
 while getopts "h" arg; do
 	case $arg in
@@ -22,17 +22,17 @@ if [[ $# -ne 2 ]]; then
 fi
 
 readonly artifact=$1
-readonly options=$2
+readonly config=$2
 
 # shellcheck disable=SC2089
 readonly DEFAULT_VERSION_CAPTURE_QUERY='.tag_name | sub("^v"; "")'
 readonly DEFAULT_FILENAME_STRATEGY="original"
 
-repo=$(echo "$options" | yq -r '.repo')
-version_capture_query=$(echo "$options" | yq -r '.versionCaptureQuery // ""')
-asset_matcher_query=$(echo "$options" | yq -r '.assetMatcherQuery')
-filename_strategy=$(echo "$options" | yq -r '.filenameStrategy // ""')
-filename_extension=$(echo "$options" | yq -r '.filenameExtension // ""')
+repo=$(echo "$config" | yq -r '.repo')
+version_capture_query=$(echo "$config" | yq -r '.versionCaptureQuery // ""')
+asset_matcher_query=$(echo "$config" | yq -r '.assetMatcherQuery')
+filename_strategy=$(echo "$config" | yq -r '.filenameStrategy // ""')
+filename_extension=$(echo "$config" | yq -r '.filenameExtension // ""')
 version_capture_query=${version_capture_query:-$DEFAULT_VERSION_CAPTURE_QUERY}
 filename_strategy=${filename_strategy:-$DEFAULT_FILENAME_STRATEGY}
 

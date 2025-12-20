@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-	echo "Usage: $(basename "$0") [-h] artifact_name options"
+	echo "Usage: $(basename "$0") [-h] artifact_name config"
 }
 while getopts "h" arg; do
 	case $arg in
@@ -22,12 +22,12 @@ if [[ $# -ne 2 ]]; then
 fi
 
 readonly artifact=$1
-readonly options=$2
+readonly config=$2
 
 target_path=$(ore-artifact "$artifact")
 mkdir -p "$target_path"
 
-downloader=$(echo "$options" | yq -r '.script // ""')
+downloader=$(echo "$config" | yq -r '.script // ""')
 downloader=${downloader:-$artifact}
 downloader_path="$ORE_HOME/custom-downloader/$downloader"
 
