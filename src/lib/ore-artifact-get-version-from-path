@@ -24,7 +24,7 @@ fi
 readonly artifact_name=$1
 readonly artifact_path=$2
 
-versionRegex=$(ore-config '.distribution |  to_entries | .[] | .value[]| select(.name == "'"$artifact_name"'")|.versionRegex // ""')
+versionRegex=$(ore-config '.distribution | to_entries | .[] | .value | to_entries | .[] | .value[]| select(.name == "'"$artifact_name"'")|.versionRegex // ""')
 
 readonly default_version_regex='^'$artifact_name'-\([^-]*\)\(\.zip\|\.tgz\|\.tar\.gz\|\.tar\.bz2\|\.tar\.xz\|\.tbz2\|\.txz\|\.tar\)$'
 

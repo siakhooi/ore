@@ -42,7 +42,7 @@ fi
 install_version=$("$ORE_LIB_HOME/ore-artifact-get-version-from-path" "$artifact" "$source_path")
 echo.debug "Install version: $install_version"
 
-config=$(ore-config '.distribution |  to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
+config=$(ore-config '.distribution | to_entries | .[] | .value | to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
 
 artifact_java_path=$(echo "$config" | yq -r '.javaPath // ""')
 default_java_path=$(ore-config '.defaultJavaPath // "java"')

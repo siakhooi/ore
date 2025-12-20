@@ -16,7 +16,7 @@ _ore_completions_for-distribute() {
     local cur files
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
-    files=$(ore-config ".distribution[][].name"|sort|uniq )
+    files=$(ore-config ".distribution[][][].name"|sort|uniq )
     mapfile -t COMPREPLY < <(compgen -W "${files}" -- "${cur}")
 }
 complete -F _ore_completions_for-distribute ore-distribute

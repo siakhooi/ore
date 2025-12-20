@@ -28,8 +28,8 @@ fi
 readonly artifact=$1
 version=$2
 
-distribution_type=$(ore-config '.distribution | to_entries | .[] | select(.value[] | select(.name == "'"$artifact"'")) | .key')
-config=$(ore-config '.distribution |  to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
+distribution_type=$(ore-config '.distribution | to_entries | .[] | .value | to_entries | .[] | select(.value[] | select(.name == "'"$artifact"'")) | .key')
+config=$(ore-config '.distribution | to_entries | .[] | .value | to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
 
 echo.debug "Distribution type: $distribution_type"
 echo.debug "Artifact: $artifact"

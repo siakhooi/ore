@@ -67,10 +67,11 @@ download:
         extension: .jar
 
 distribution:
-  app:
-    - name: gradle
-    - name: jacoco
-      createDirectory: Y
-      versionRegex: ^jacoco-v\(.*\).zip$
-    - name: artifact1
-      extractMethod: zip
+  default:
+    app:
+      - name: gradle
+      - name: jacoco
+        createDirectory: Y
+        versionRegex: ^jacoco-v\(.*\).zip$
+      - name: artifact1
+        extractMethod: zip

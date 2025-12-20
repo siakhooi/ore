@@ -24,9 +24,9 @@ fi
 readonly artifact_name=$1
 readonly artifact_path=$2
 
-extractMethod=$(ore-config '.distribution |  to_entries | .[] | .value[]| select(.name == "'"$artifact_name"'")|.extractMethod // ""')
+extractMethod=$(ore-config '.distribution | to_entries | .[] | .value | to_entries | .[] | .value[]| select(.name == "'"$artifact_name"'")|.extractMethod // ""')
 
-  if [[ -n $extractMethod ]]; then
+if [[ -n $extractMethod ]]; then
   echo "$extractMethod"
 
 elif [[ "$artifact_path" =~ \.zip$ ]]; then
