@@ -32,6 +32,7 @@ fi
 %files
 %license LICENSE
 %{_bindir}/ore-artifact
+%{_bindir}/ore-completion
 %{_bindir}/ore-config
 %{_bindir}/ore-config-edit
 %{_bindir}/ore-config-set
@@ -56,6 +57,10 @@ fi
 %{_libdir}/ore/ore-init
 
 %changelog
+* Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.19.0
+- remove ore-artifacts-*
+- add ore-completion
+
 * Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.18.0
 - add ore-distribute(app with versions, bin, custom, deb, jarcli)
 - ore-artifact to support (-c, copy file)

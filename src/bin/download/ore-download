@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # shellcheck disable=SC1091
-# source /usr/lib/ore/ore-init
-source /home/sing/.mygh/ore/src/lib/ore-init
+source /usr/lib/ore/ore-init
 
 usage() {
 	echo "Usage: $(basename "$0") [-h] [-g group] artifact..."

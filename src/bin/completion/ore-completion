@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# shellcheck disable=SC2016
+echo '
+_ore_completions_for-download() {
+    local cur files
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    files=$(ore-config ".download[][][].name"|sort|uniq )
+    mapfile -t COMPREPLY < <(compgen -W "${files}" -- "${cur}")
+}
+complete -F _ore_completions_for-download ore-download
+complete -F _ore_completions_for-download ore-artifact
+
+_ore_completions_for-distribute() {
+    local cur files
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    files=$(ore-config ".distribution[][].name"|sort|uniq )
+    mapfile -t COMPREPLY < <(compgen -W "${files}" -- "${cur}")
+}
+complete -F _ore_completions_for-distribute ore-distribute
+'
