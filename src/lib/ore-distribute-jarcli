@@ -42,18 +42,40 @@ fi
 install_version=$("$ORE_LIB_HOME/ore-artifact-get-version-from-path" "$artifact" "$source_path")
 echo.debug "Install version: $install_version"
 
-target_basename=${artifact}
-target_path=$target_home/$target_basename
 config=$(ore-config '.distribution |  to_entries | .[] | .value[]| select(.name == "'"$artifact"'")')
 
 artifact_java_path=$(echo "$config" | yq -r '.javaPath // ""')
-default_java_path=$(ore-config  '.defaultJavaPath // "java"')
+default_java_path=$(ore-config '.defaultJavaPath // "java"')
 java_path=${artifact_java_path:-$default_java_path}
 echo.debug "Using java path: $java_path"
 
-# shellcheck disable=SC2145
-echo "#!/bin/bash
+# clis=$(echo "$config" | yq -r '.clis // ""')
+cli_count=$(echo "$config" | yq -r '.clis | length')
+echo.debug "cli_count: $cli_count"
+if [[ $cli_count -gt 0 ]]; then
+	for ((i = 0; i < cli_count; i++)); do
+		class=$(echo "$config" | yq -r ".clis[$i].class")
+		cli=$(echo "$config" | yq -r ".clis[$i].cli")
+		echo.debug "Class: $class, CLI: $cli"
+
+		target_basename=${cli}
+		target_path=$target_home/$target_basename
+		# shellcheck disable=SC2145
+		echo "#!/bin/bash
+
+exec \"$java_path\" -cp \"$source_path\" \"$class\" \"\$@\"
+" >"$target_path"
+		chmod +x "$target_path"
+	done
+
+else
+	target_basename=${artifact}
+	target_path=$target_home/$target_basename
+
+	# shellcheck disable=SC2145
+	echo "#!/bin/bash
 
 exec \"$java_path\" -jar \"$source_path\" \"\$@\"
 " >"$target_path"
-chmod +x "$target_path"
+	chmod +x "$target_path"
+fi
