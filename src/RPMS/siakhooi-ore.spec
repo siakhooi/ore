@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.19.0
+Version:        0.20.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -58,6 +58,10 @@ fi
 %{_libdir}/ore/ore-init
 
 %changelog
+* Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.20.0
+- update ore-run -G
+- change distribute config
+
 * Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.19.0
 - remove ore-artifacts-*
 - add ore-completion

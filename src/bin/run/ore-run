@@ -5,19 +5,24 @@ source /usr/lib/ore/ore-init
 
 usage() {
 	echo "Run download and distribution of artifacts"
-	echo "Usage: $(basename "$0") [-h] [-g group] artifact..."
-	echo "-g group   Specify a group of artifacts to download (can be used multiple times)"
+	echo "Usage: $(basename "$0") [-h] [-g download_group] [-G distribution_group] artifact..."
+	echo "-g download_group       Specify a group of artifacts to download (can be used multiple times)"
+	echo "-G distribution_group   Specify a group of artifacts to distribute (can be used multiple times)"
 	echo "-h         Show this help message"
 }
-groups=()
-while getopts "hg:" arg; do
+download_groups=()
+distribution_groups=()
+while getopts "hg:G:" arg; do
 	case $arg in
 	h)
 		usage
 		exit 0
 		;;
 	g)
-		groups+=("$OPTARG")
+		download_groups+=("$OPTARG")
+		;;
+	G)
+		distribution_groups+=("$OPTARG")
 		;;
 	*)
 		usage
@@ -27,23 +32,31 @@ while getopts "hg:" arg; do
 done
 shift $((OPTIND - 1))
 
-artifacts=()
-artifacts+=("$@")
+download_artifacts=()
+download_artifacts+=("$@")
+distribution_artifacts=()
+distribution_artifacts+=("$@")
 
-for group in "${groups[@]}"; do
+for group in "${download_groups[@]}"; do
 	while IFS= read -r artifact; do
-		artifacts+=("$artifact")
+		download_artifacts+=("$artifact")
 	done < <(ore-config '.download.'"$group"'[][].name')
 done
+for group in "${distribution_groups[@]}"; do
+	while IFS= read -r artifact; do
+		distribution_artifacts+=("$artifact")
+	done < <(ore-config '.distribution.'"$group"'[][].name')
+done
 
-if [[ ${#artifacts[@]} -eq 0 ]]; then
+if [[ ${#download_artifacts[@]} -eq 0 ]] && [[ ${#distribution_artifacts[@]} -eq 0 ]]; then
 	usage >&2
 	exit 0
 fi
 
-echo.debug "downloading:" "${artifacts[@]}"
-
-for artifact in "${artifacts[@]}"; do
+for artifact in "${download_artifacts[@]}"; do
 	ore-download "$artifact"
+done
+
+for artifact in "${distribution_artifacts[@]}"; do
 	ore-distribute "$artifact"
 done
