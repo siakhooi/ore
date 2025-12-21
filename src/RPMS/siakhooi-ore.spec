@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.20.1
+Version:        0.20.2
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -58,6 +58,12 @@ fi
 %{_libdir}/ore/ore-init
 
 %changelog
+* Sun Dec 21 2025 Siak Hooi <siakhooi@gmail.com> - 0.20.2
+- fix ore-run exit code
+
+* Sun Dec 21 2025 Siak Hooi <siakhooi@gmail.com> - 0.20.1
+- fix download jfrog bug
+
 * Sat Dec 20 2025 Siak Hooi <siakhooi@gmail.com> - 0.20.0
 - update ore-run -G
 - change distribute config

@@ -53,10 +53,17 @@ if [[ ${#download_artifacts[@]} -eq 0 ]] && [[ ${#distribution_artifacts[@]} -eq
 	exit 0
 fi
 
+exit_code=0
 for artifact in "${download_artifacts[@]}"; do
-	ore-download "$artifact"
+	if ! ore-download "$artifact"; then
+		((exit_code++))
+	fi
 done
 
 for artifact in "${distribution_artifacts[@]}"; do
-	ore-distribute "$artifact"
+	if ! ore-distribute "$artifact"; then
+		((exit_code++))
+	fi
 done
+
+exit $exit_code
