@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.20.0
+Version:        0.20.1
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 

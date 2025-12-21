@@ -1,5 +1,5 @@
 Package: siakhooi-ore
-Version: 0.20.0
+Version: 0.20.1
 Maintainer: Siak Hooi <siakhooi@gmail.com>
 Depends: bash, coreutils, siakhooi-devutils-echo-colors, siakhooi-textutils, bsdextrautils, sed, findutils
 Architecture: amd64
