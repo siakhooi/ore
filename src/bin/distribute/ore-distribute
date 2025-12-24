@@ -40,22 +40,36 @@ if [[ $# -eq 2 ]]; then
 	options+=("$version")
 fi
 
+exit_code=0
+
 if [[ "$distribution_type" == "app" ]]; then
-	"$ORE_LIB_HOME/ore-distribute-app" "${options[@]}"
+	if ! "$ORE_LIB_HOME/ore-distribute-app" "${options[@]}"; then
+		((exit_code++))
+	fi
 
 elif [[ "$distribution_type" == "bin" ]]; then
-  "$ORE_LIB_HOME/ore-distribute-bin" "${options[@]}"
+	if ! "$ORE_LIB_HOME/ore-distribute-bin" "${options[@]}"; then
+		((exit_code++))
+	fi
 
 elif [[ "$distribution_type" == "custom" ]]; then
-  "$ORE_LIB_HOME/ore-distribute-custom" "${options[@]}"
+	if ! "$ORE_LIB_HOME/ore-distribute-custom" "${options[@]}"; then
+		((exit_code++))
+	fi
 
 elif [[ "$distribution_type" == "deb" ]]; then
-  "$ORE_LIB_HOME/ore-distribute-deb" "${options[@]}"
+	if ! "$ORE_LIB_HOME/ore-distribute-deb" "${options[@]}"; then
+		((exit_code++))
+	fi
 
 elif [[ "$distribution_type" == "jarcli" ]]; then
-  "$ORE_LIB_HOME/ore-distribute-jarcli" "${options[@]}"
+	if ! "$ORE_LIB_HOME/ore-distribute-jarcli" "${options[@]}"; then
+		((exit_code++))
+	fi
 
 else
 	echo.error "Artifact not supported: $artifact"
-	exit 2
+	((exit_code++))
 fi
+
+exit $exit_code

@@ -49,10 +49,11 @@ else
 	echo.debug "$artifact latest version is $SDKMAN_VERSION."
 	versions+=("$SDKMAN_VERSION")
 fi
+exit_code=0
 for SDKMAN_VERSION in "${versions[@]}"; do
 
 	filename="${SDKMAN_CANDIDATE}-${SDKMAN_VERSION}${extension}"
-	target_path=$(ore-artifact "$artifact")"/$filename"
+	target_path="$(ore-artifact "$artifact")"/"$filename"
 
 	if [[ -f "$target_path" ]]; then
 		echo.debug "$filename already exists."
@@ -62,6 +63,12 @@ for SDKMAN_VERSION in "${versions[@]}"; do
 			set -x
 			curl -L --fail "$url" -o "$target_path"
 		)
+		if [[ $? -ne 0 ]]; then
+			echo.error "Failed to download $url"
+			exit_code=1
+		fi
 	fi
 
 done
+
+exit $exit_code

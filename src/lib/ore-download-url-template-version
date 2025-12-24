@@ -30,33 +30,33 @@ mkdir -p "$zip_home"
 alwaysDownload=$(echo "$config" | yq -r '.alwaysDownload // ""')
 is-true "$alwaysDownload" && echo.debug "alwaysDownload is on"
 
+exit_code=0
 # shellcheck disable=SC2016
-echo "$config" | yq -r '.urls[] | [.baseurl, .template // "", .targetFormat] | join(",")' | nl -v 0 -w 1 -s ',' |
-	while IFS=, read -r index baseurl template targetFormat; do
+while IFS=, read -r index baseurl template targetFormat; do
 
-		# shellcheck disable=SC2016
-		template=${template:-'${version}'}
+	# shellcheck disable=SC2016
+	template=${template:-'${version}'}
 
-		echo "$config" | yq -r ".urls[$index]|.versions[]" |
-			while read -r version; do
+	while read -r version; do
 
-				url=${baseurl//$template/$version}
-				if [[ -z "$targetFormat" ]]; then
-					filename=$(basename "$url")
-				else
-					filename=${targetFormat//\$\{version\}/$version}
-				fi
+		url=${baseurl//$template/$version}
+		if [[ -z "$targetFormat" ]]; then
+			filename=$(basename "$url")
+		else
+			filename=${targetFormat//\$\{version\}/$version}
+		fi
 
-				target_path=$(ore-artifact "$artifact")"/$filename"
+		target_path=$(ore-artifact "$artifact")"/$filename"
 
-				if ! is-true "$alwaysDownload" && [[ -f $target_path ]]; then
-					echo.debug "$target_path already exists." >&2
-				else
-					(
-						set -x
-						curl -L --fail "$url" -o "$target_path"
-					)
+		if ! is-true "$alwaysDownload" && [[ -f $target_path ]]; then
+			echo.debug "$target_path already exists." >&2
+		else
+			if ! curl -L --fail "$url" -o "$target_path"; then
+				echo.error "Failed to download $url"
+				((exit_code++))
+			fi
+		fi
+	done < <(echo "$config" | yq -r ".urls[$index]|.versions[]")
+done < <(echo "$config" | yq -r '.urls[] | [.baseurl, .template // "", .targetFormat] | join(",")' | nl -v 0 -w 1 -s ',')
 
-				fi
-			done
-	done
+exit $exit_code

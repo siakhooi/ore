@@ -64,12 +64,15 @@ else
 	fi
 	if [[ ! -f "$distributor_path" ]]; then
 		echo.error "Distributor for $artifact not found. ($distributor_path)"
-		exit 2
+		exit 1
 	fi
 	if [[ ! -x "$distributor_path" ]]; then
 		echo.error "Distributor for $artifact is not executable. ($distributor_path)"
-		exit 3
+		exit 1
 	fi
-	$distributor_path "$artifact" "$source_path" "$target_path"
+	if ! $distributor_path "$artifact" "$source_path" "$target_path"; then
+		echo.error "Distributor script failed for $artifact"
+		exit 1
+	fi
 
 fi

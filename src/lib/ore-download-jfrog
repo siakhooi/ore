@@ -89,4 +89,9 @@ else
 		set -x
 		curl -L --fail "$download_url" -o "$local_name"
 	)
+	# shellcheck disable=SC2181
+	if [[ $? -ne 0 ]]; then
+		echo.error "Failed to download $download_url"
+		exit 1
+	fi
 fi

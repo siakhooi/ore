@@ -30,19 +30,20 @@ mkdir -p "$zip_home"
 alwaysDownload=$(echo "$config" | yq -r '.alwaysDownload // ""')
 is-true "$alwaysDownload" && echo.debug "alwaysDownload is on"
 
-echo "$config" | yq -r '.urls[]|[.url, .name]|join(",")' |
-	while IFS=, read -r url name; do
+exit_code=0
+while IFS=, read -r url name; do
 
-		filename=${name:-$(basename "$url")}
-		target_path=$(ore-artifact "$artifact")"/$filename"
+	filename=${name:-$(basename "$url")}
+	target_path="$(ore-artifact "$artifact")"/"$filename"
 
-		if ! is-true "$alwaysDownload" && [[ -f $target_path ]]; then
-			echo.debug "$target_path already exists." >&2
-		else
-			(
-				set -x
-				curl -L --fail "$url" -o "$target_path"
-			)
-
+	if ! is-true "$alwaysDownload" && [[ -f $target_path ]]; then
+		echo.debug "$target_path already exists." >&2
+	else
+		if ! curl -L --fail "$url" -o "$target_path"; then
+			echo.error "Failed to download $url"
+			((exit_code++))
 		fi
-	done
+	fi
+done < <(echo "$config" | yq -r '.urls[]|[.url, .name]|join(",")')
+
+exit $exit_code

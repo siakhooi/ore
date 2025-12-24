@@ -40,11 +40,14 @@ if [[ -z "$downloader" ]]; then
 fi
 if [[ ! -f "$downloader_path" ]]; then
 	echo.error "Downloader for $artifact not found. ($downloader_path)"
-	exit 2
+	exit 1
 fi
 if [[ ! -x "$downloader_path" ]]; then
 	echo.error "Downloader for $artifact is not executable. ($downloader_path)"
-	exit 3
+	exit 1
 fi
 
-$downloader_path "$artifact" "$target_path"
+if ! $downloader_path "$artifact" "$target_path"; then
+	echo.error "Downloader script failed for $artifact"
+	exit 1
+fi

@@ -37,7 +37,12 @@ version_capture_query=${version_capture_query:-$DEFAULT_VERSION_CAPTURE_QUERY}
 filename_strategy=${filename_strategy:-$DEFAULT_FILENAME_STRATEGY}
 
 set -e
-latest=$(curl --no-progress-meter "https://api.github.com/repos/$repo/releases/latest")
+latest=$(curl --fail --no-progress-meter "https://api.github.com/repos/$repo/releases/latest")
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+	echo.error "Failed to fetch latest release from GitHub"
+	exit 1
+fi
 
 VERSION=$(echo "$latest" | jq -r "$version_capture_query")
 echo.debug "$artifact latest version is $VERSION."
@@ -59,7 +64,7 @@ fi
 
 if [[ -z $target_file ]]; then
 	echo.error "Unable to determinte target file"
-	exit 2
+	exit 1
 
 fi
 
@@ -74,4 +79,9 @@ else
 		set -x
 		curl -L --fail "$DOWNLOAD_URL" -o "$target_path"
 	)
+	# shellcheck disable=SC2181
+	if [[ $? -ne 0 ]]; then
+		echo.error "Failed to download $DOWNLOAD_URL"
+		exit 1
+	fi
 fi

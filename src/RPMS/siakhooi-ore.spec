@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.20.2
+Version:        0.20.3
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -58,6 +58,9 @@ fi
 %{_libdir}/ore/ore-init
 
 %changelog
+* Wed Dec 24 2025 Siak Hooi <siakhooi@gmail.com> - 0.20.3
+- fix exit code issues
+
 * Sun Dec 21 2025 Siak Hooi <siakhooi@gmail.com> - 0.20.2
 - fix ore-run exit code
 
