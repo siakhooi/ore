@@ -16,7 +16,6 @@ programs=(
   echo
   basename
   yq
-  jv
   jq
 )
 

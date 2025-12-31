@@ -23,7 +23,6 @@ sudo yum install siakhooi-ore
 ## Requirements
 
 - `yq`
-- `jv`
 - `jq`
 
 ## Binaries
