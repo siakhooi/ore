@@ -73,7 +73,7 @@ target_path=$(ore-artifact "$artifact")"/$target_file"
 mkdir -p "$(dirname "$target_path")"
 
 if [[ -f "$target_path" ]]; then
-	echo.debug "$target_file already exists." >&2
+	echo.error "$target_file already exists." 
 else
 	(
 		set -x
