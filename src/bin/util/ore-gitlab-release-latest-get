@@ -1,0 +1,35 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $(basename "$0") [-h] repo [jq_query]"
+}
+while getopts "h" arg; do
+	case $arg in
+	h)
+		usage
+		exit 0
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+if [[ $# -ne 1 ]] && [[ $# -ne 2 ]]; then
+	usage
+	exit 0
+fi
+
+repo=$1
+jq_query=$2
+
+repo=$(urlencode "$1")
+url="https://gitlab.com/api/v4/projects/${repo}/releases"
+
+if [[ $# -eq 1 ]]; then
+	jq_query='.[0]'
+else
+	jq_query='.[0]|'"$jq_query"
+fi
+curl --no-progress-meter "$url" | jq -r "$jq_query"

@@ -39,6 +39,7 @@ fi
 %{_bindir}/ore-distribute
 %{_bindir}/ore-download
 %{_bindir}/ore-github-release-latest-get
+%{_bindir}/ore-gitlab-release-latest-get
 %{_bindir}/ore-run
 %{_bindir}/ore-sdkman-java-list
 %{_bindir}/ore-version
