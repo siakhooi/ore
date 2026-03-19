@@ -34,6 +34,6 @@ check-init:
 	ls -l /etc/profile.d/ore-init.sh /usr/lib/ore/ore-init
 
 docker-build-rpm:
-	docker run --rm -v $(CURDIR):/workspace docker.io/siakhooi/devcontainer:rpm scripts/build-rpms.sh
+	docker run --rm -v $(CURDIR):/workspaces docker.io/siakhooi/devcontainer:rpm scripts/build-rpms.sh
 docker-build-deb:
-	docker run --rm -v $(CURDIR):/workspace docker.io/siakhooi/devcontainer:deb scripts/build-deb.sh
+	docker run --rm -v $(CURDIR):/workspaces docker.io/siakhooi/devcontainer:deb scripts/build-deb.sh
