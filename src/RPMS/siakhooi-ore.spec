@@ -1,5 +1,5 @@
 Name:           siakhooi-ore
-Version:        0.20.4
+Version:        0.21.0
 Release:        1%{?dist}
 Summary:        certificate generators for development purposes
 
@@ -59,6 +59,12 @@ fi
 %{_libdir}/ore/ore-init
 
 %changelog
+* Thu Mar 19 2026 Siak Hooi <siakhooi@gmail.com> - 0.21.0
+- add ore-gitlab-release-latest-get
+- fix ore-github-release-latest-get
+- touch up error messages
+- remove jv
+
 * Mon Dec 29 2025 Siak Hooi <siakhooi@gmail.com> - 0.20.4
 - fix ore-download-jfrog a few bugs
 
