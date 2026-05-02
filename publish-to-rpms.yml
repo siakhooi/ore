@@ -1,0 +1,10 @@
+repo: siakhooi/rpms
+branch: main
+git_commit_user: ore
+git_commit_email: ore@siakhooi.github.io
+git_commit_message: "ore: Auto deploy"
+
+files:
+  - source: siakhooi-ore-*.fc*.noarch.rpm
+    target: docs/
+    items: 1
