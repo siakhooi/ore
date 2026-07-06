@@ -1,0 +1,226 @@
+artifacts:
+  home: /path/to/keep/ore/downloaded/artifacts
+  distribute:
+    app: /path/to/app
+
+download:
+  default:
+    - name: just
+      repo: casey/just
+      versionCaptureQuery: .tag_name|sub("v(?<v>.*)"; "\(.v)")
+      assetMatcherQuery: ^just-.*-x86_64-unknown-linux-musl.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: hugo
+      repo: gohugoio/hugo
+      versionCaptureQuery: .tag_name|sub("v(?<v>.*)"; "\(.v)")
+      assetMatcherQuery: ^hugo_[^ew].*_Linux-64bit.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+
+    - name: actionlint
+      repo: rhysd/actionlint
+      versionCaptureQuery: .tag_name|sub("v(?<v>.*)"; "\(.v)")
+      assetMatcherQuery: ^actionlint_.*_linux_amd64.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: act
+      repo: nektos/act
+      versionCaptureQuery: .tag_name|sub("v(?<v>.*)"; "\(.v)")
+      assetMatcherQuery: ^act_Linux_x86_64.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+
+    - name: websocat
+      repo: vi/websocat
+      versionCaptureQuery: .tag_name|sub("v(?<v>.*)"; "\(.v)")
+      assetMatcherQuery: ^websocat.x86_64-unknown-linux-musl$
+      filenameStrategy: artifact-version
+
+    - name: k6
+      repo: grafana/k6
+      versionCaptureQuery: .tag_name|sub("v(?<v>.*)"; "\(.v)")
+      assetMatcherQuery: ^k6-v[^-]*-linux-amd64.tar.gz$
+
+    - name: gomplate
+      repo: hairyhenderson/gomplate
+      assetMatcherQuery: gomplate_linux-amd64
+      filenameStrategy: artifact-version
+
+    - name: conda
+      repo: conda/conda
+      assetMatcherQuery: ^conda-[^-]*.tar.gz$
+
+    - name: asciinema
+      repo: asciinema/asciinema
+      assetMatcherQuery: ^jq-linux-amd64$
+      versionCaptureQuery: .tag_name|sub("v(?<v>.*)"; "\(.v)")
+      filenameStrategy: artifact-version
+
+    - name: golangci-lint
+      repo: golangci/golangci-lint
+      assetMatcherQuery: ^golangci-lint-[^-]*-linux-amd64.tar.gz$
+
+    - name: goreleaser
+      repo: goreleaser/goreleaser
+      assetMatcherQuery: ^goreleaser_Linux_x86_64.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: pom-cli
+      repo: andirady/pom-cli
+      assetMatcherQuery: ^pomcli-.*-linux-x86_64.tar.gz$
+
+    - name: istioctl
+      repo: istio/istio
+      assetMatcherQuery: ^istioctl-[^-]*-linux-amd64.tar.gz$
+
+    - name: agg
+      repo: asciinema/agg
+      versionCaptureQuery: .tag_name|sub("v(?<v>.*)"; "\(.v)")
+      assetMatcherQuery: ^agg-x86_64-unknown-linux-gnu$
+      filenameStrategy: artifact-version
+
+    - name: mq
+      repo: harehare/mq
+      versionCaptureQuery: .tag_name|sub("v(?<v>.*)"; "\(.v)")
+      assetMatcherQuery: ^mq-x86_64-unknown-linux-gnu$
+      filenameStrategy: artifact-version
+
+    - name: kind
+      repo: kubernetes-sigs/kind
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^kind-linux-amd64$
+      filenameStrategy: artifact-version
+
+    - name: minikube
+      repo: kubernetes/minikube
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^minikube-linux-amd64$
+      filenameStrategy: artifact-version
+
+    - name: k3d
+      repo: k3d-io/k3d
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^k3d-linux-amd64$
+      filenameStrategy: artifact-version
+
+    - name: fzf
+      repo: junegunn/fzf
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^fzf-.*-linux_amd64.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: k0s
+      repo: k0sproject/k0s
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^k0s-v.*-amd64$
+      filenameStrategy: artifact-version
+
+    - name: kompose
+      repo: kubernetes/kompose
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^kompose-linux-amd64$
+      filenameStrategy: artifact-version
+
+    - name: cmctl
+      repo: cert-manager/cmctl
+      assetMatcherQuery: ^cmctl_linux_amd64$
+      filenameStrategy: artifact-version
+
+    - name: oc
+      repo: okd-project/okd
+      assetMatcherQuery: ^openshift-client-linux-\\d.*.tar.gz$
+
+    - name: htmlq
+      repo: mgdm/htmlq
+      versionCaptureQuery: .tag_name
+      assetMatcherQuery: ^htmlq-x86_64-linux.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: FlaUInspect
+      repo: FlaUI/FlaUInspect
+      versionCaptureQuery: .tag_name
+      assetMatcherQuery: ^FlaUInspect_(.*).zip$
+
+    - name: yr
+      repo: VirusTotal/yara-x
+      versionCaptureQuery: .tag_name
+      assetMatcherQuery: ^yara-x-.*-x86_64-unknown-linux-gnu.gz$
+
+distribution:
+  default:
+    app:
+      - name: hugo
+        createDirectory: Y
+      - name: just
+        versionRegex: ^just-\(.*\).tar.gz$
+        createDirectory: Y
+      - name: actionlint
+        versionRegex: ^actionlint-\(.*\).tar.gz$
+        createDirectory: Y
+      - name: act
+        versionRegex: ^act-\(.*\).tar.gz$
+        createDirectory: Y
+      - name: goreleaser
+        createDirectory: Y
+      - name: golangci-lint
+        versionRegex: ^golangci-lint-\(.*\)-linux-amd64.tar.gz$
+      - name: pom-cli
+        versionRegex: ^pomcli-\(.*\)-linux-x86_64.tar.gz$
+    bin:
+      - name: fzf
+        versionRegex: ^fzf-\(.*\).tar.gz$
+      - name: yr
+        versionRegex: ^yara-x-\(.*\)-x86_64-unknown-linux-gnu.gz$
+        extractMethod: tar
+      - name: mq
+        extractMethod: copy
+        versionRegex: ^mq-\([^-]*\)$
+      - name: gomplate
+        versionRegex: ^gomplate-\(.*\)$
+        extractMethod: copy
+      - name: agg
+        extractMethod: copy
+        versionRegex: ^agg-\([^-]*\)$
+      - name: kind
+        extractMethod: copy
+        versionRegex: ^kind-v\([^-]*\)$
+      - name: k3d
+        extractMethod: copy
+        versionRegex: ^k3d-v\([^-]*\)$
+      - name: k0s
+        extractMethod: copy
+        versionRegex: ^k0s-v\([^-]*\)$
+      - name: cmctl
+        extractMethod: copy
+        versionRegex: ^cmctl-v\([^-]*\)$
+      - name: minikube
+        extractMethod: copy
+        versionRegex: ^minikube-v\([^-]*\)$
+      - name: kompose
+        extractMethod: copy
+        versionRegex: ^kompose-v\([^-]*\)$
+      - name: websocat
+        extractMethod: copy
+        versionRegex: ^websocat-\([^-]*\)$
+      - name: istioctl
+        versionRegex: ^istioctl-\([^-]*\)-linux-amd64.tar.gz$
+      - name: oc
+        versionRegex: ^openshift-client-linux-\(.*\).tar.gz$
+      - name: htmlq
+    custom:
+      - name: k6
+        versionRegex: ^k6-v\(.*\).tar.gz$
+        script: k6
+
+# no distributions
+# asciinema
+# conda
+# FlaUInspect

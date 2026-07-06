@@ -1,0 +1,38 @@
+#!/bin/bash
+
+if [[ $# -ne 3 ]]; then
+  echo "Usage: $(basename "$0") artifact file_path install_location" >&2
+  exit 0
+fi
+
+artifact_name=$1
+archive_file=$2
+install_location=$3
+
+filename=$(basename "$archive_file")
+version=${filename#*-v}
+version=${version%%-*}
+targetFile="${artifact_name}-${version}"
+
+target_location="$HOME/.bin"
+if [[ -f "$target_location/$targetFile" ]]; then
+  echo "File $target_location/$targetFile already exists. Skipping distribution of $artifact_name." >&2
+  exit 0
+fi
+
+tempDir=$(mktemp -d --tmpdir "$(basename "$0")-XXXXXXXXXX")
+echo "tempDir=$tempDir"
+
+cd "$tempDir" || exit 1
+tar -xf "$archive_file"
+
+sourceFile=$(find "$tempDir" -type f -name "k6")
+echo "$sourceFile $version"
+echo "Distribute $artifact_name: $archive_file to $install_location"
+cd "$HOME"/.bin || {
+  echo "Failed to change directory to $HOME/.bin" >&2
+  exit 1
+}
+cp "$sourceFile" ./"$targetFile"
+ln -s -f -T "$targetFile" "$artifact_name"
+
