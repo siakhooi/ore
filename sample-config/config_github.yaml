@@ -2,6 +2,8 @@ artifacts:
   home: /path/to/keep/ore/downloaded/artifacts
   distribute:
     app: /path/to/app
+    bin: /path/to/bin
+    custom: /path/to/app
 
 download:
   default:
