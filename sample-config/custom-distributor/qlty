@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [[ $# -ne 3 ]]; then
+  echo "Usage: $(basename "$0") artifact file_path install_location" >&2
+  exit 0
+fi
+
+artifact_name=$1
+archive_file=$2
+install_location=$3
+
+install_name=$(basename "$install_location")
+install_home=$(dirname "$install_location")
+
+echo "Distribute $artifact_name: $archive_file to $install_location"
+
+tempDir=$(mktemp -d --tmpdir "$(basename "$0")-XXXXXXXXXX")
+echo "tempDir=$tempDir"
+
+cd "$tempDir" || exit 1
+mkdir "$install_name"
+tar -xf "$archive_file" -C "$install_name" --strip-components=1
+
+mv "$install_name" "$install_location"
+(cd "$install_home" && ln -s -f -T "$install_name" "$artifact_name")

@@ -4,6 +4,7 @@ artifacts:
     app: /path/to/app
     bin: /path/to/bin
     custom: /path/to/app
+    jarcli: /path/to/.jarcli
 
 download:
   default:
@@ -156,6 +157,108 @@ download:
       versionCaptureQuery: .tag_name
       assetMatcherQuery: ^yara-x-.*-x86_64-unknown-linux-gnu.gz$
 
+    - name: mkcert
+      repo: FiloSottile/mkcert
+      assetMatcherQuery: ^mkcert-v[^-]*-linux-amd64$
+      filenameStrategy: artifact-version
+
+    - name: qlty
+      repo: qltysh/qlty
+      assetMatcherQuery: ^qlty-x86_64-unknown-linux-gnu.tar.xz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: MiniZincIDE
+      repo: MiniZinc/MiniZincIDE
+      assetMatcherQuery: ^MiniZincIDE-[^-]*-bundle-linux-x86_64.tgz$
+
+    - name: qpdf
+      repo: qpdf/qpdf
+      assetMatcherQuery: ^qpdf-.*-bin-linux-x86_64.zip$
+
+    - name: pandoc
+      repo: jgm/pandoc
+      assetMatcherQuery: ^pandoc-.*?-amd64.deb$
+
+    - name: keycloak
+      repo: keycloak/keycloak
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^keycloak-[^-]*.tar.gz$
+
+    - name: liquibase
+      repo: liquibase/liquibase
+      assetMatcherQuery: ^liquibase-[^-]*.tar.gz$
+
+    - name: jq
+      repo: jqlang/jq
+      assetMatcherQuery: ^jq-linux-amd64$
+      versionCaptureQuery: .tag_name|sub("jq-(?<v>.*)"; "\(.v)")
+      filenameStrategy: artifact-version
+
+    - name: yq
+      repo: mikefarah/yq
+      assetMatcherQuery: ^yq_linux_amd64$
+      filenameStrategy: artifact-version
+
+    - name: jacoco
+      repo: jacoco/jacoco
+      assetMatcherQuery: ^jacoco-.*.zip$
+      filenameStrategy: artifact-version
+      filenameExtension: .zip
+
+    - name: wsl-vpnkit
+      repo: sakai135/wsl-vpnkit
+      assetMatcherQuery: ^wsl-vpnkit.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: protoc
+      repo: protocolbuffers/protobuf
+      assetMatcherQuery: ^protoc-.*-linux-x86_64.zip$
+
+    - name: node_exporter
+      repo: prometheus/node_exporter
+      assetMatcherQuery: ^node_exporter-.*.linux-amd64.tar.gz$
+
+    - name: kubepfm
+      repo: flowerinthenight/kubepfm
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^kubepfm.*_linux_amd64.tar.gz$
+
+    - name: kubectl-slice
+      repo: patrickdappollonio/kubectl-slice
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^kubectl-slice_linux_x86_64.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: kubeconform
+      repo: yannh/kubeconform
+      versionCaptureQuery: .name
+      assetMatcherQuery: ^kubeconform-linux-amd64.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: jv
+      repo: santhosh-tekuri/jsonschema
+      versionCaptureQuery: .tag_name
+      assetMatcherQuery: ^jv-.*-linux-amd64.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: slim
+      repo: slimtoolkit/slim
+      versionCaptureQuery: .tag_name
+      assetMatcherQuery: ^dist_linux.tar.gz$
+      filenameStrategy: artifact-version
+      filenameExtension: .tar.gz
+
+    - name: h2
+      repo: h2database/h2database
+      versionCaptureQuery: .tag_name|sub("version-(?<v>.*)"; "\(.v)")
+      assetMatcherQuery: ^h2-[0-9\\.]*.jar$
+      filenameExtension: .zip
+
 distribution:
   default:
     app:
@@ -176,6 +279,18 @@ distribution:
         versionRegex: ^golangci-lint-\(.*\)-linux-amd64.tar.gz$
       - name: pom-cli
         versionRegex: ^pomcli-\(.*\)-linux-x86_64.tar.gz$
+      - name: MiniZincIDE
+        versionRegex: ^MiniZincIDE-\([^-]*\)-bundle-linux-x86_64.tgz$
+      - name: keycloak
+      - name: liquibase
+        createDirectory: Y
+      - name: jv
+        createDirectory: Y
+        versionRegex: ^jv-v\(.*\).tar.gz$
+      - name: slim
+      - name: jacoco
+        createDirectory: Y
+
     bin:
       - name: fzf
         versionRegex: ^fzf-\(.*\).tar.gz$
@@ -217,12 +332,46 @@ distribution:
       - name: oc
         versionRegex: ^openshift-client-linux-\(.*\).tar.gz$
       - name: htmlq
+      - name: mkcert
+        extractMethod: copy
+        versionRegex: ^mkcert-v\([^-]*\)$
+      - name: protoc
+        versionRegex: ^protoc-\([^-]*\)-linux-x86_64.zip$
+      - name: kubectl-slice
+        versionRegex: ^kubectl-slice-v\([^-]*\).tar.gz$
+      - name: kubeconform
+      - name: kubepfm
+        versionRegex: ^kubepfm_\([^-]*\)_linux_amd64.tar.gz$
+      - name: node_exporter
+        versionRegex: ^node_exporter-\([^-]*\).linux-amd64.tar.gz$
+      - name: yq
+        extractMethod: copy
+        versionRegex: ^yq-\([^-]*\)$
+      - name: jq
+        extractMethod: copy
+        versionRegex: ^jq-\([^-]*\)$
+
     custom:
       - name: k6
         versionRegex: ^k6-v\(.*\).tar.gz$
         script: k6
+      - name: wsl-vpnkit
+        versionRegex: ^wsl-vpnkit-v\(.*\).tar.gz$
+      - name: qlty
+        versionRegex: ^qlty-v\(.*\).tar.gz$
+        script: qlty
+
+    jarcli:
+      - name: h2
+        clis:
+          - class: org.h2.tools.Server
+            cli: h2-server
+          - class: org.h2.tools.Shell
+            cli: h2-shell
 
 # no distributions
 # asciinema
 # conda
 # FlaUInspect
+# qpdf
+# pandoc
